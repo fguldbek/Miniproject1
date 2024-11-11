@@ -3,6 +3,7 @@ using MongoDB.Bson.Serialization.Attributes;
 using System;
 using System.ComponentModel.DataAnnotations;
 
+namespace Miniproject1.Model;
 public class User
 {
     public ObjectId Id { get; set; }

@@ -4,7 +4,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 
 
-namespace BlazorApp1.Model;
+namespace Miniproject1.Model;
 
 
 public class Post
