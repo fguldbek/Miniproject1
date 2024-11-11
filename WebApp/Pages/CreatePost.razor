@@ -1,6 +1,71 @@
 @page "/CreatePost"
-<h3>CreatePost</h3>
+@using Core
+@using System.ComponentModel.DataAnnotations
+@using MongoDB.Bson
+
+<h3 style="text-align: center; color: #333; margin-bottom: 20px;">Create Post</h3>
+
+<div class="container" style="max-width: 800px; margin: 50px auto; padding: 30px; background-color: #ffffff; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+    <EditForm Model="newPost" OnValidSubmit="HandleSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="form-group" style="margin-bottom: 20px;">
+            <label for="name" style="font-weight: 600; color: #333; font-size: 1.1em;">Name</label>
+            <InputText id="name" class="form-control" @bind-Value="newPost.Name" style="width: 100%; padding: 12px; margin-top: 8px; border: 1px solid #ccc; border-radius: 4px;" />
+            <ValidationMessage For="() => newPost.Name" style="color: #ff0000; font-size: 0.9em;" />
+        </div>
+
+        <div class="form-group" style="margin-bottom: 20px;">
+            <label for="price" style="font-weight: 600; color: #333; font-size: 1.1em;">Price</label>
+            <InputNumber id="price" class="form-control" @bind-Value="newPost.Price" style="width: 100%; padding: 12px; margin-top: 8px; border: 1px solid #ccc; border-radius: 4px;" />
+            <ValidationMessage For="() => newPost.Price" style="color: #ff0000; font-size: 0.9em;" />
+        </div>
+
+        <div class="form-group" style="margin-bottom: 20px;">
+            <label for="description" style="font-weight: 600; color: #333; font-size: 1.1em;">Description</label>
+            <InputTextArea id="description" class="form-control" @bind-Value="newPost.Description" style="width: 100%; padding: 12px; margin-top: 8px; border: 1px solid #ccc; border-radius: 4px;" />
+            <ValidationMessage For="() => newPost.Description" style="color: #ff0000; font-size: 0.9em;" />
+        </div>
+
+        <div class="form-group" style="margin-bottom: 20px;">
+            <label for="imageUrl" style="font-weight: 600; color: #333; font-size: 1.1em;">Image URL (Optional)</label>
+            <InputText id="imageUrl" class="form-control" @bind-Value="newPost.ImageUrl" style="width: 100%; padding: 12px; margin-top: 8px; border: 1px solid #ccc; border-radius: 4px;" />
+        </div>
+
+        <div class="form-group" style="margin-bottom: 20px;">
+            <label for="category" style="font-weight: 600; color: #333; font-size: 1.1em;">Category</label>
+            <InputSelect id="category" class="form-control" @bind-Value="newPost.Category" multiple style="width: 100%; padding: 12px; margin-top: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                @foreach (var category in newPost.Category)
+                {
+                    <option value="@category">@category</option>
+                }
+            </InputSelect>
+            <ValidationMessage For="() => newPost.Category" style="color: #ff0000; font-size: 0.9em;" />
+        </div>
+
+        <div class="form-group" style="margin-bottom: 20px;">
+            <label for="status" style="font-weight: 600; color: #333; font-size: 1.1em;">Status</label>
+            <InputSelect id="status" class="form-control" @bind-Value="newPost.Status" style="width: 100%; padding: 12px; margin-top: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                @foreach (var status in newPost.Status)
+                {
+                    <option value="@status">@status</option>
+                }
+            </InputSelect>
+            <ValidationMessage For="() => newPost.Status" style="color: #ff0000; font-size: 0.9em;" />
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 15px; background-color: #007bff; color: white; font-size: 1.2em; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s;">
+            Create Post
+        </button>
+    </EditForm>
+</div>
 
 @code {
+    private Post newPost = new Post();
 
+    private async Task HandleSubmit()
+    {
+        // Skipping the MongoDB part for now
+    }
 }

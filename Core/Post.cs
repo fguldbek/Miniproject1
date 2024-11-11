@@ -11,9 +11,7 @@ using System.ComponentModel.DataAnnotations;
 namespace Core;
 
 
-public class Post
-{
-    public class Product
+    public class Post
     {
         public ObjectId Id { get; set; }
         
@@ -31,10 +29,9 @@ public class Post
         public string? ImageUrl { get; set; }
         
         [Required]
-        public List<string>? Category { get; set;}
+        public string [] Category { get; set;} = { "Clothing", "Electronics", "Accessories", "Furniture", "Other"};
 
         [Required]
-        public Array Status { get; set; }
+        public string[] Status { get; set; } = { "Active", "inactive", "Reserved" };
 
     }
-}
