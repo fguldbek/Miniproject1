@@ -13,8 +13,7 @@ public class User
     
     public int UserId { get; set; }
     
- 
-    public int BuyerId { get; set; }
+    public static int BuyerId { get; set; }
     
     [Required]
     [StringLength(50, MinimumLength = 2, ErrorMessage = "Name must be between 2 and 50 characters.")]
