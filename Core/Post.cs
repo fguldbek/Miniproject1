@@ -13,8 +13,11 @@ namespace Core;
 
     public class Post
     {
-        public ObjectId Id { get; set; }
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string Id { get; set; }
         
+       
         [Required]
         [StringLength(50, MinimumLength = 2, ErrorMessage = "Name must be between 2 and 50 characters.")]
         public string Name { get; set; }
@@ -28,4 +31,8 @@ namespace Core;
         
         public string? ImageUrl { get; set; }
         
+
+        public string? Status { get; set; } = "Active";
+        
+
     }
