@@ -5,13 +5,12 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Core;
 
-public class Room
+public class Location
 {
     
-    public string Int { get; set; }
+    public int Id { get; set; }
     
     public string Name { get; set; }
     
-    public string Location { get; set; }
-    
+    public string Room { get; set; }
 }
