@@ -28,10 +28,4 @@ namespace Core;
         
         public string? ImageUrl { get; set; }
         
-        [Required]
-        public string [] Category { get; set;} = { "Clothing", "Electronics", "Accessories", "Furniture", "Other"};
-
-        [Required]
-        public string[] Status { get; set; } = { "Active", "inactive", "Reserved" };
-
     }
