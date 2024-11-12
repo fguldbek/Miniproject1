@@ -4,7 +4,7 @@ using Core;
 
 namespace ServerAPI1.Repositories;
 
-public class IPostRepository
+public interface IPostRepository
 {
     
 }

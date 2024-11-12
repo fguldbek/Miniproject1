@@ -5,7 +5,7 @@ using Core;
 
 namespace ServerAPI1.Repositories;
 
-public class IOrderRepository
+public interface IOrderRepository
 {
     
 }
