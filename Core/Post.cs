@@ -30,7 +30,8 @@ namespace Core;
         public string? ImageUrl { get; set; }
         
 
-        public string? Status { get; set; } = "Active";
+        public string Status { get; set; } = "Active";
         
-
+        public int LocationId { get; set; }
+        
     }
