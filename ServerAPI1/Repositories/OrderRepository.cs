@@ -53,7 +53,7 @@ namespace ServerAPI1.Repositories
 
         
 
-        //Finder alle ordre, hvor BuyerId matcher
+        //Finder alle ordre, hvor Buyer Id matcher
         public Order[] GetAllByUserId(ObjectId buyerId)
         {
             var filter = Builders<Order>.Filter.Eq(order => User.BuyerId, buyerId);
