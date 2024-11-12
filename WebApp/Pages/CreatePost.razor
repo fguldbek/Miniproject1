@@ -35,15 +35,23 @@
         
         
         <p style="font-weight: 600; color: #333; font-size: 1.1em;">Choose Category: @SelectedValue</p>
-        <select @bind="SelectedValue">
-            <option value="@Options[0]">@Options[0]</option>
-            <option value="@Options[1]">@Options[1]</option>
-            <option value="@Options[2]">@Options[2]</option>
-            <option value="@Options[3]">@Options[3]</option>
-            <option value="@Options[4]">@Options[4]</option>
-            <option value="@Options[5]">@Options[5]</option>
-            <option value="@Options[6]">@Options[6]</option>
-            <option value="@Options[7]">@Options[7]</option>
+        <select @bind="CategorySelectedValue">
+            <option value="@CategoryOptions[0]">@CategoryOptions[0]</option>
+            <option value="@CategoryOptions[1]">@CategoryOptions[1]</option>
+            <option value="@CategoryOptions[2]">@CategoryOptions[2]</option>
+            <option value="@CategoryOptions[3]">@CategoryOptions[3]</option>
+            <option value="@CategoryOptions[4]">@CategoryOptions[4]</option>
+            <option value="@CategoryOptions[5]">@CategoryOptions[5]</option>
+            <option value="@CategoryOptions[6]">@CategoryOptions[6]</option>
+            <option value="@CategoryOptions[7]">@CategoryOptions[7]</option>
+        </select>
+
+        <p style="font-weight: 600; color: #333; font-size: 1.1em; margin-top: 40px">Choose a room: @RoomSelectedValue</p>
+        <select @bind="RoomSelectedValue">
+            <option value="@RoomOptions[0]">@RoomOptions[0]</option>
+            <option value="@RoomOptions[1]">@RoomOptions[1]</option>
+            <option value="@RoomOptions[2]">@RoomOptions[2]</option>
+            <option value="@RoomOptions[3]">@RoomOptions[3]</option>
         </select>
        
         <button type="submit" class="btn btn-primary" style="width: 100%; padding: 15px; background-color: #007bff; color: white; font-size: 1.2em; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s; margin-top: 35px">
@@ -56,8 +64,12 @@
 @code {
     
     //CategorySaver
-    private List<string> Options = new List<string> { "Clothing", "Electronics", "Furniture", "Plants", "Animals", "Food", "Cars", "Books" };
-    private string SelectedValue { get; set; } // Brug den her til MongoDB
+    private List<string> CategoryOptions = new List<string> { "Clothing", "Electronics", "Furniture", "Plants", "Animals", "Food", "Cars", "Books" };
+    private string CategorySelectedValue { get; set; } // Brug den her til MongoDB
+    
+    //RoomPicker
+    private List<string> RoomOptions = new List<string> { "Room 12", "Room 74", "Room 102", "Room 132"};
+    private string RoomSelectedValue { get; set; } // Brug den her til MongoDB
     
     private Post newPost = new Post();
     
@@ -66,8 +78,9 @@
     private async Task HandleSubmit()
     {
         // MongoDB stuff...
-
-        Console.WriteLine(SelectedValue);
+        
+        Console.WriteLine(RoomSelectedValue);
+        Console.WriteLine(CategorySelectedValue);
         Console.WriteLine(newPost.Name);
         Console.WriteLine(newPost.Price);
         Console.WriteLine(newPost.Description);

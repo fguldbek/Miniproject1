@@ -32,6 +32,5 @@ namespace Core;
 
         public string Status { get; set; } = "Active";
         
-        public int LocationId { get; set; }
         
     }
