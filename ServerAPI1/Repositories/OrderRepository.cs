@@ -1,5 +1,6 @@
 using System;
 using Core;
+using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace ServerAPI1.Repositories
@@ -38,7 +39,7 @@ namespace ServerAPI1.Repositories
             collection.InsertOne(item);
            
         }
-
+        
         public void DeleteById(int id){
             var deleteResult = collection
                 .DeleteOne(Builders<Order>.Filter.Where(r => r.Id == id));
@@ -52,9 +53,8 @@ namespace ServerAPI1.Repositories
         public void UpdateItem(Order item)
         {
             var updateDef = Builders<Order>.Update
-                 .Set(x => x.Amount, item.Amount)
-                 .Set(x => x.Description, item.Description)
-                 .Set(x => x.Done, item.Done);
+                .Set(x => x.TotalAmount, item.TotalAmount)
+                .Set(x => x.PurchaseDate, item.PurchaseDate);
             collection.UpdateOne(x => x.Id == item.Id, updateDef);
         }
     }
