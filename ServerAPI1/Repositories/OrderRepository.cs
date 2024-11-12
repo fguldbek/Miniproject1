@@ -20,7 +20,7 @@ namespace ServerAPI1.Repositories
             // Provide the name of the database and collection you want to use.
             // If they don't already exist, the driver and Atlas will create them
             // automatically when you first write data.
-            var dbName = "myDatabase";
+            var dbName = "OrdersDB";
             var collectionName = "shoppingitems";
 
             collection = client.GetDatabase(dbName)
@@ -45,16 +45,25 @@ namespace ServerAPI1.Repositories
                 .DeleteOne(Builders<Order>.Filter.Where(r => r.Id == id));
         }
 
+        
         public Order[] GetAll()
         {
            return collection.Find(Builders<Order>.Filter.Empty).ToList().ToArray();
         }
 
+        
+
+        //Finder alle ordre, hvor BuyerId matcher
+        public Order[] GetAllByUserId(ObjectId buyerId)
+        {
+            var filter = Builders<Order>.Filter.Eq(order => User.BuyerId, buyerId);
+            return collection.Find(filter).ToList().ToArray();
+        }
+
         public void UpdateItem(Order item)
         {
             var updateDef = Builders<Order>.Update
-                .Set(x => x.TotalAmount, item.TotalAmount)
-                .Set(x => x.PurchaseDate, item.PurchaseDate);
+                .Set(x => x.TotalAmount, item.TotalAmount);
             collection.UpdateOne(x => x.Id == item.Id, updateDef);
         }
     }
