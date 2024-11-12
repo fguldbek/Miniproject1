@@ -9,7 +9,6 @@ public class Order
 {
     
     public int Id { get; set; }
-    
     public double  TotalAmount { get; set; }
     
     public DateTime  PurchaseDate { get; set; }
