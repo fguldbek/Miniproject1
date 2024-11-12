@@ -10,7 +10,7 @@ public class Order
     
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
-    public int  Id { get; set; }
+    public string Id { get; set; }
     
     public double  TotalAmount { get; set; }
     
