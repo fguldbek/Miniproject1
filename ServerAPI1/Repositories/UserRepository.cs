@@ -4,7 +4,7 @@ using Core;
 
 namespace ServerAPI1.Repositories;
 
-public class UserRepository
+public class UserRepository : IUserRepository
 {
     
 }

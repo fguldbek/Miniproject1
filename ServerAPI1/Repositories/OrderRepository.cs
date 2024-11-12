@@ -3,7 +3,7 @@ using MongoDB.Driver;
 using Core;
 namespace ServerAPI1.Repositories;
 
-public class OrderRepository
+public class OrderRepository : IOrderRepository
 {
     
 }
