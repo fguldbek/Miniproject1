@@ -53,8 +53,8 @@ namespace ServerAPI1.Repositories
 
         
 
-        //Finder alle ordre, hvor BuyerId matcher
-        public Order[] GetAllByUserId(ObjectId buyerId)
+        //Finder alle ordre, hvor BuyerId matcher Aka Købshistorik
+        public Order[] GetAllByUserId(int buyerId)
         {
             var filter = Builders<Order>.Filter.Eq(order => User.BuyerId, buyerId);
             return collection.Find(filter).ToList().ToArray();
