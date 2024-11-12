@@ -8,9 +8,7 @@ namespace Core;
 public class Order
 {
     
-    [BsonId]
-    [BsonRepresentation(BsonType.ObjectId)]
-    public string Id { get; set; }
+    public int Id { get; set; }
     
     public double  TotalAmount { get; set; }
     
