@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Core;
 using ServerAPI1.Repositories;
@@ -6,6 +7,7 @@ namespace ServerAPI1.Controllers
 {
     [ApiController]
     [Route("api/shopping")]
+    [EnableCors("AllowSpecificOrigin")]
     public class OrderController : ControllerBase
     {
         private IOrderRepository mRepo;
