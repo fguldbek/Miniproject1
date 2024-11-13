@@ -3,33 +3,35 @@
 @inject HttpClient Http;
 @inject NavigationManager navigationManager
 
+<link href="css/CreatePost.css" rel="stylesheet" />
 
 
-<h1 class="mb-3 mt-3">Shopping List</h1>
+<header class="header h1">
+    <h1 class="header">Creat an Ad</h1>
+</header>
 <table class="table table-striped">
     <thead>
-        <tr>
-            <th>Name</th>
-            <th>Amount</th>
-            <th>Price</th>
-            <th>Done</th>
-            <th>Category</th>
-            <th>Room</th>
-        </tr>
+    <tr>
+        <th>Name</th>
+        <th>Amount</th>
+        <th>Price</th>
+        <th>Done</th>
+        <th>Category</th>
+        <th>Room</th>
+    </tr>
     </thead>
     <tbody>
-        @foreach (var item in shoppingList ?? new Order[0])
-        {
-            <tr>
-                <td>@item.Name</td>
-                <td>@item.Amount</td>
-                <td>@item.Price</td>
-                <td>@item.Done</td>
-                <th>@item.Category</th>
-                <td>@item.Room</td>
-            </tr>
-        }
-
+    @foreach (var item in shoppingList ?? new Order[0])
+    {
+    <tr>
+        <td>@item.Name</td>
+        <td>@item.Amount</td>
+        <td>@item.Price</td>
+        <td>@item.Done</td>
+        <th>@item.Category</th>
+        <td>@item.Room</td>
+    </tr>
+    }
     </tbody>
 </table>
 
@@ -46,12 +48,11 @@
         <label for="Price">Price</label>
         <InputNumber id="Price" @bind-Value="shoppingItem.Price" class="form-control" />
     </div>
-    
+
     <div class="col-md-12 mb-3">
         <label for="Description">Description</label>
         <InputTextArea id="Description" @bind-Value="shoppingItem.Description" class="form-control" />
     </div>
-    
 
     <div class="col-md-12 mb-3">
         <label for="Category">Category</label>
@@ -62,13 +63,13 @@
             }
         </select>
     </div>
-    
+
     <div class="col-md-12 mb-3">
         <label for="Room">Room</label>
         <select id="Room" @bind="shoppingItem.Room" class="form-control">
             @foreach(var room in RoomOptions)
             {
-                <option value="@room">@room</option>
+            <option value="@room">@room</option>
             }
         </select>
     </div>
@@ -77,55 +78,51 @@
         <label for="ImageUrl">Image Url</label>
         <InputTextArea id="ImageUrl" @bind-Value="shoppingItem.ImageUrl" class="form-control" />
     </div>
-    
-    
+
     <div class="col-12 mb-3">
         <button type="submit" class="btn btn-primary">Add</button>
     </div>
 </EditForm>
 
-
 @code {
-    
-    //CategorySaver
-    private List<string> CategoryOptions = new List<string> { "Clothing", "Electronics", "Furniture", "Plants", "Animals", "Food", "Cars", "Books" }; 
-    
-    //RoomPicker
-    private List<string> RoomOptions = new List<string> { "Room 12", "Room 74", "Room 102", "Room 132"};
+//CategorySaver
+private List<string> CategoryOptions = new List<string> { "Clothing", "Electronics", "Furniture", "Plants", "Animals", "Food", "Cars", "Books" };
 
-    // Objekt for formen der vises modal
-    private Order shoppingItem = new();
+//RoomPicker
+private List<string> RoomOptions = new List<string> { "Room 12", "Room 74", "Room 102", "Room 132"};
 
-    // container for listen
-    private Order[]? shoppingList = new Order[0];
+// Objekt for formen der vises modal
+private Order shoppingItem = new();
 
-    // adresse på server
-    private string serverUrl = "http://localhost:5144";
-    
-    protected override async Task OnInitializedAsync()
-    {
-        shoppingList = await Http.GetFromJsonAsync<Order[]>($"{serverUrl}/api/shopping/getall");
-    }
+// container for listen
+private Order[]? shoppingList = new Order[0];
 
-    public async Task HandleValidSubmit()
-    {
-        await AddShoppingItem();
-    }
+// adresse på server
+private string serverUrl = "http://localhost:5144";
 
-    private async Task AddShoppingItem()
-    {
-        await Http.PostAsJsonAsync<Order>($"{serverUrl}/api/shopping/add", shoppingItem);
-        Console.WriteLine("Klient: add " + shoppingItem.Name + " " + shoppingItem.Price);
-        shoppingList = await Http.GetFromJsonAsync<Order[]>($"{serverUrl}/api/shopping/getall");
-        shoppingItem = new(); // clear fields in form
-    }
-    
-    private async Task DeleteShoppingItem(Order item)
-    {
-        await Http.DeleteAsync($"{serverUrl}/api/shopping/delete/{item.Id}");
+protected override async Task OnInitializedAsync()
+{
+shoppingList = await Http.GetFromJsonAsync<Order[]>($"{serverUrl}/api/shopping/getall");
+}
 
-        shoppingList = await Http.GetFromJsonAsync<Order[]>($"{serverUrl}/api/shopping/getall");
-    }
+public async Task HandleValidSubmit()
+{
+await AddShoppingItem();
+}
 
+private async Task AddShoppingItem()
+{
+await Http.PostAsJsonAsync<Order>($"{serverUrl}/api/shopping/add", shoppingItem);
+Console.WriteLine("Klient: add " + shoppingItem.Name + " " + shoppingItem.Price);
+shoppingList = await Http.GetFromJsonAsync<Order[]>($"{serverUrl}/api/shopping/getall");
+shoppingItem = new(); // clear fields in form
+}
+
+private async Task DeleteShoppingItem(Order item)
+{
+await Http.DeleteAsync($"{serverUrl}/api/shopping/delete/{item.Id}");
+
+shoppingList = await Http.GetFromJsonAsync<Order[]>($"{serverUrl}/api/shopping/getall");
+}
 }
 
