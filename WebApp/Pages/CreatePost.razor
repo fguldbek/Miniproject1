@@ -12,7 +12,7 @@
             <th>Name</th>
             <th>Amount</th>
             <th>Price</th>
-            <th>Done</th>
+            <th>Status</th>
             <th>Category</th>
             <th>Room</th>
         </tr>
@@ -23,9 +23,9 @@
             <tr>
                 <td>@item.Name</td>
                 <td>@item.Amount</td>
-                <td>@item.Price</td>
-                <td>@item.Done</td>
-                <th>@item.Category</th>
+                <td>@item.Price$</td>
+                <td>@item.Status</td>
+                <td>@item.Category</td>
                 <td>@item.Room</td>
             </tr>
         }
@@ -100,7 +100,7 @@
     private Order[]? shoppingList = new Order[0];
 
     // adresse på server
-    private string serverUrl = "http://localhost:5144";
+    private string serverUrl = "http://localhost:5145";
     
     protected override async Task OnInitializedAsync()
     {
