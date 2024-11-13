@@ -5,7 +5,7 @@
 
 
 
-<h1 class="mb-3 mt-3">Shopping List</h1>
+<h1 class="mb-3 mt-3">Things u posted</h1>
 <table class="table table-striped">
     <thead>
         <tr>
@@ -74,8 +74,8 @@
     </div>
 
     <div class="col-md-12 mb-3">
-        <label for="ImageUrl">Image Url</label>
-        <InputTextArea id="ImageUrl" @bind-Value="shoppingItem.ImageUrl" class="form-control" />
+        <label for="ImageUpload">Upload Image</label>
+        <InputFile id="ImageUpload" OnChange="HandleFileSelected" class="form-control" />
     </div>
     
     
@@ -86,6 +86,7 @@
 
 
 @code {
+    
     
     //CategorySaver
     private List<string> CategoryOptions = new List<string> { "Clothing", "Electronics", "Furniture", "Plants", "Animals", "Food", "Cars", "Books" }; 
@@ -120,6 +121,27 @@
         shoppingItem = new(); // clear fields in form
     }
     
+    //Ændrer fil til string
+    private async Task HandleFileSelected(InputFileChangeEventArgs e)
+    {
+         //Hent den valgte fil
+        var file = e.File;
+
+        // Opret en buffer til at holde filens bytes
+        var buffer = new byte[file.Size];
+
+        //: Læs filens bytes ind i bufferet
+        using (var stream = file.OpenReadStream())
+        {
+            await stream.ReadAsync(buffer, 0, (int)file.Size);
+        }
+
+        // Konverter byte-array til en base64-streng og gem i shoppingItem
+        shoppingItem.ImageUrl = Convert.ToBase64String(buffer);
+    }
+    
+    
+    //Delete?
     private async Task DeleteShoppingItem(Order item)
     {
         await Http.DeleteAsync($"{serverUrl}/api/shopping/delete/{item.Id}");
