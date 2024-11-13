@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Core;
 using ServerAPI1.Repositories;
 
@@ -8,16 +9,26 @@ namespace ServerAPI1.Controllers
     [Route("api/shopping")]
     public class OrderController : ControllerBase
     {
-        private IOrderRepository mRepo;
+        private readonly IOrderRepository mRepo;
+        private readonly ILogger<OrderController> _logger;
 
-        public OrderController(IOrderRepository repo){
+        public OrderController(IOrderRepository repo, ILogger<OrderController> logger){
+            _logger = logger;
             mRepo = repo;
         }
 
         [HttpGet]
         [Route("getall")]
         public IEnumerable<Order> GetAll(){
-            return mRepo.GetAll();
+            try
+            {
+                return mRepo.GetAll();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while getting all orders.");
+                throw;
+            }
         }
         
 
