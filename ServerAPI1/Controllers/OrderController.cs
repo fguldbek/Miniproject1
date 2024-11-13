@@ -26,7 +26,7 @@ namespace ServerAPI1.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while getting all orders.");
+                _logger.LogError(ex, "An error occurred while getting all orders. Exception: {Message}", ex.Message);
                 throw;
             }
         }
