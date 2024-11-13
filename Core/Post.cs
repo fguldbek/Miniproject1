@@ -18,19 +18,19 @@ namespace Core;
         
         [Required]
         [StringLength(50, MinimumLength = 2, ErrorMessage = "Name must be between 2 and 50 characters.")]
-        public string Name { get; set; }
+        public static string Name { get; set; }
         
         [Required]
         [Range(1,int.MaxValue, ErrorMessage = "Price must be positive")]
-        public double Price { get; set; }
+        public static double Price { get; set; }
         
         [Required]
-        public string? Description { get; set; }
+        public static string? Description { get; set; }
         
-        public string? ImageUrl { get; set; }
+        public static string? ImageUrl { get; set; }
         
 
-        public string Status { get; set; } = "Active";
+        public static string Status { get; set; } = "Active";
         
         
     }

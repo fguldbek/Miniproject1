@@ -1,89 +1,93 @@
 @page "/CreatePost"
-@using Core
-@using System.ComponentModel.DataAnnotations
-@using MongoDB.Bson
+@using Core;
+@inject HttpClient Http;
+@inject NavigationManager navigationManager
 
-<h3 style="text-align: center; color: #333; margin-bottom: 20px;">Post an Item</h3>
 
-<div class="container" style="max-width: 800px; margin: 50px auto; padding: 30px; background-color: #ffffff; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
-    <EditForm Model="newPost" OnValidSubmit="HandleSubmit">
-        <DataAnnotationsValidator />
-        <ValidationSummary />
 
-        <div class="form-group" style="margin-bottom: 20px;">
-            <label for="name" style="font-weight: 600; color: #333; font-size: 1.1em;">Name</label>
-            <InputText id="name" class="form-control" @bind-Value="newPost.Name" style="width: 100%; padding: 12px; margin-top: 8px; border: 1px solid #ccc; border-radius: 4px;" />
-            <ValidationMessage For="() => newPost.Name" style="color: #ff0000; font-size: 0.9em;" />
-        </div>
+<h1 class="mb-3 mt-3">Shopping List</h1>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Amount</th>
+            <th>Price</th>
+            <th>Done</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in shoppingList ?? new Order[0])
+        {
+            <tr>
+                <td>@item.Name</td>
+                <td>@item.Price</td>
 
-        <div class="form-group" style="margin-bottom: 20px;">
-            <label for="price" style="font-weight: 600; color: #333; font-size: 1.1em;">Price</label>
-            <InputNumber id="price" class="form-control" @bind-Value="newPost.Price" style="width: 100%; padding: 12px; margin-top: 8px; border: 1px solid #ccc; border-radius: 4px;" />
-            <ValidationMessage For="() => newPost.Price" style="color: #ff0000; font-size: 0.9em;" />
-        </div>
+            </tr>
+        }
 
-        <div class="form-group" style="margin-bottom: 20px;">
-            <label for="description" style="font-weight: 600; color: #333; font-size: 1.1em;">Description</label>
-            <InputTextArea id="description" class="form-control" @bind-Value="newPost.Description" style="width: 100%; padding: 12px; margin-top: 8px; border: 1px solid #ccc; border-radius: 4px;" />
-            <ValidationMessage For="() => newPost.Description" style="color: #ff0000; font-size: 0.9em;" />
-        </div>
+    </tbody>
+</table>
 
-        <div class="form-group" style="margin-bottom: 20px;">
-            <label for="imageUrl" style="font-weight: 600; color: #333; font-size: 1.1em;">Image URL (Optional)</label>
-            <InputText id="imageUrl" class="form-control" @bind-Value="newPost.ImageUrl" style="width: 100%; padding: 12px; margin-top: 8px; border: 1px solid #ccc; border-radius: 4px;" />
-        </div>
-        
-        
-        <p style="font-weight: 600; color: #333; font-size: 1.1em;">Choose Category: @CategorySelectedValue</p>
-        <select @bind="CategorySelectedValue">
-            <option value="@CategoryOptions[0]">@CategoryOptions[0]</option>
-            <option value="@CategoryOptions[1]">@CategoryOptions[1]</option>
-            <option value="@CategoryOptions[2]">@CategoryOptions[2]</option>
-            <option value="@CategoryOptions[3]">@CategoryOptions[3]</option>
-            <option value="@CategoryOptions[4]">@CategoryOptions[4]</option>
-            <option value="@CategoryOptions[5]">@CategoryOptions[5]</option>
-            <option value="@CategoryOptions[6]">@CategoryOptions[6]</option>
-            <option value="@CategoryOptions[7]">@CategoryOptions[7]</option>
-        </select>
+<h2>Add ...</h2>
 
-        <p style="font-weight: 600; color: #333; font-size: 1.1em; margin-top: 40px">Choose a room: @RoomSelectedValue</p>
-        <select @bind="RoomSelectedValue">
-            <option value="@RoomOptions[0]">@RoomOptions[0]</option>
-            <option value="@RoomOptions[1]">@RoomOptions[1]</option>
-            <option value="@RoomOptions[2]">@RoomOptions[2]</option>
-            <option value="@RoomOptions[3]">@RoomOptions[3]</option>
-        </select>
-       
-        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 15px; background-color: #007bff; color: white; font-size: 1.2em; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s; margin-top: 35px">
-            Create Post
-        </button>
-        
-    </EditForm>
-</div>
+<EditForm Model="@shoppingItem" class="row p-3" OnValidSubmit="@HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="col-md-12 mb-3">
+        <label for="Name">Name</label>
+        <InputText id="Name" @bind-Value="shoppingItem.Name" class="form-control" />
+    </div>
+    <div class="col-md-6 mb-3">
+        <label for="Price">Price</label>
+        <InputNumber id="Price" @bind-Value="shoppingItem.Price" class="form-control" />
+    </div>
+
+
+    <div class="col-md-12 mb-3">
+        <label for="Description">Description</label>
+        <InputTextArea id="Description" @bind-Value="shoppingItem.Description" class="form-control" />
+    </div>
+    <div class="col-12 mb-3">
+        <button type="submit" class="btn btn-primary">Add</button>
+    </div>
+</EditForm>
+
 
 @code {
-    
-    //CategorySaver
-    private List<string> CategoryOptions = new List<string> { "Clothing", "Electronics", "Furniture", "Plants", "Animals", "Food", "Cars", "Books" };
-    private string CategorySelectedValue { get; set; } // Brug den her til MongoDB
-    
-    //RoomPicker
-    private List<string> RoomOptions = new List<string> { "Room 12", "Room 74", "Room 102", "Room 132"};
-    private string RoomSelectedValue { get; set; } // Brug den her til MongoDB
-    
-    private Post newPost = new Post();
-    
-    
 
-    private async Task HandleSubmit()
+    // Objekt for formen der vises modal
+    private Order shoppingItem = new();
+
+    // container for listen
+    private Order[]? shoppingList = new Order[0];
+
+    // adresse på server
+    private string serverUrl = "http://localhost:5144";
+    
+    protected override async Task OnInitializedAsync()
     {
-        // MongoDB stuff...
-        
-        Console.WriteLine(RoomSelectedValue);
-        Console.WriteLine(CategorySelectedValue);
-        Console.WriteLine(newPost.Name);
-        Console.WriteLine(newPost.Price);
-        Console.WriteLine(newPost.Description);
-        Console.WriteLine(newPost.ImageUrl);
+        shoppingList = await Http.GetFromJsonAsync<Order[]>($"{serverUrl}/api/shopping/getall");
     }
+
+    public async Task HandleValidSubmit()
+    {
+        await AddShoppingItem();
+    }
+
+    private async Task AddShoppingItem()
+    {
+        await Http.PostAsJsonAsync<Order>($"{serverUrl}/api/shopping/add", shoppingItem);
+        Console.WriteLine("Klient: add " + shoppingItem.Name + " " + shoppingItem.Price);
+        shoppingList = await Http.GetFromJsonAsync<Order[]>($"{serverUrl}/api/shopping/getall");
+        shoppingItem = new(); // clear fields in form
+    }
+    
+    private async Task DeleteShoppingItem(Order item)
+    {
+        await Http.DeleteAsync($"{serverUrl}/api/shopping/delete/{item.Id}");
+
+        shoppingList = await Http.GetFromJsonAsync<Order[]>($"{serverUrl}/api/shopping/getall");
+    }
+
 }
+

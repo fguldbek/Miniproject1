@@ -1,16 +1,17 @@
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
-using System;
-using System.ComponentModel.DataAnnotations;
-
-namespace Core;
-
-public class Order
+namespace Core
 {
-    public int Id { get; set; }
-    public double  TotalAmount { get; set; }
-    
-    public DateTime  PurchaseDate { get; set; }
-    
-    public List<string>? Post { get; set;}
+    public class Order
+    {
+        public int Id { get; set; }
+        public string Name { get; set; } = "";
+
+        public decimal Price { get; set; } = 0;
+
+        public int Amount { get; set; } = 1;
+
+        public string Description { get; set; } = "";
+
+        public bool Done { get; set; } = false;
+
+    }
 }

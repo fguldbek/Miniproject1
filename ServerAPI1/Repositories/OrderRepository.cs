@@ -5,7 +5,8 @@ using MongoDB.Driver;
 
 namespace ServerAPI1.Repositories
 {
-	public class OrderRepository : IOrderRepository
+    public class OrderRepository : IOrderRepository
+
 	{
         private IMongoClient client;
         private IMongoCollection<Order> collection;
@@ -20,8 +21,8 @@ namespace ServerAPI1.Repositories
             // Provide the name of the database and collection you want to use.
             // If they don't already exist, the driver and Atlas will create them
             // automatically when you first write data.
-            var dbName = "OrdersDB";
-            var collectionName = "shoppingitems";
+            var dbName = "Miniprojekt";
+            var collectionName = "Orders";
 
             collection = client.GetDatabase(dbName)
                .GetCollection<Order>(collectionName);
@@ -50,6 +51,7 @@ namespace ServerAPI1.Repositories
         {
            return collection.Find(Builders<Order>.Filter.Empty).ToList().ToArray();
         }
+        
 
         
 
@@ -63,7 +65,8 @@ namespace ServerAPI1.Repositories
         public void UpdateItem(Order item)
         {
             var updateDef = Builders<Order>.Update
-                .Set(x => x.TotalAmount, item.TotalAmount);
+                .Set(x => x.Amount, item.Amount);
+            
             collection.UpdateOne(x => x.Id == item.Id, updateDef);
         }
     }
