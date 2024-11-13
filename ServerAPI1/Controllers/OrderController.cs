@@ -7,7 +7,6 @@ namespace ServerAPI1.Controllers
 {
     [ApiController]
     [Route("api/shopping")]
-    [EnableCors("AllowSpecificOrigin")]
     public class OrderController : ControllerBase
     {
         private IOrderRepository mRepo;
