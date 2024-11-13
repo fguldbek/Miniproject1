@@ -7,7 +7,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigin", policy =>
     {
-        policy.WithOrigins("https://localhost:7147")  // Brug præcis din frontend URL her
+        policy.WithOrigins("https://localhost:7147", "http://localhost:5144")  // Brug præcis din frontend URL her
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
