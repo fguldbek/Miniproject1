@@ -17,7 +17,7 @@ namespace Core
         
         public string Room { get; set; }
 
-        public bool Done { get; set; } = false;        
+        public bool Status { get; set; } 
 
     }
 }
