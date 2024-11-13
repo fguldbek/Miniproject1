@@ -17,6 +17,7 @@ namespace ServerAPI1.Repositories
 		{
             _logger = logger;
             var password = ""; //add
+            _logger.LogInformation("Initializing MongoDB client.");
             var mongoUri = $"mongodb+srv://fguldbaek:EmX759ivZyR6VZgD@cluster0.ravrm.mongodb.net/";
             
             client = new MongoClient(mongoUri);
@@ -27,6 +28,7 @@ namespace ServerAPI1.Repositories
             var dbName = "Miniprojekt";
             var collectionName = "Orders";
 
+            _logger.LogInformation("Connecting to database: {DatabaseName}, Collection: {CollectionName}", dbName, collectionName);
             collection = client.GetDatabase(dbName)
                .GetCollection<Order>(collectionName);
 
