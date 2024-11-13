@@ -12,5 +12,4 @@ public class Location
     
     public string Name { get; set; }
     
-    public string Room { get; set; }
 }

@@ -10,8 +10,15 @@ namespace Core
         public int Amount { get; set; } = 1;
 
         public string Description { get; set; } = "";
+        
+        public string? ImageUrl { get; set; }
+        
+        public string? Category { get; set; }
+        
+        public string Room { get; set; }
 
         public bool Done { get; set; } = false;
+        
 
     }
 }
