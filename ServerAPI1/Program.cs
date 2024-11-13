@@ -24,6 +24,7 @@ builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
 // Tilføj CORS-politik til middleware
+app.UseCors("AllowAllOrigins");  // Ensure CORS is applied before other middleware
 app.UseHttpsRedirection();
 app.UseCors("AllowAllOrigins");  // Bemærk at "AllowAllOrigins" bruges her
 app.UseAuthorization();
