@@ -5,9 +5,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Tilføj CORS-politik
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowSpecificOrigin", policy =>
+    options.AddPolicy("AllowAllOrigins", policy =>
     {
-        policy.WithOrigins("https://localhost:7147", "http://localhost:5144")  // Brug præcis din frontend URL her
+        policy.AllowAnyOrigin()
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
@@ -25,7 +25,7 @@ var app = builder.Build();
 
 // Tilføj CORS-politik til middleware
 app.UseHttpsRedirection();
-app.UseCors("AllowSpecificOrigin");  // Bemærk at "AllowSpecificOrigin" bruges her
+app.UseCors("AllowAllOrigins");  // Bemærk at "AllowAllOrigins" bruges her
 app.UseAuthorization();
 
 if (app.Environment.IsDevelopment())
