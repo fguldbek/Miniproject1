@@ -1,0 +1,45 @@
+
+# 2024-11-11 16:29:20.413706
++y
+
+# 2024-11-11 16:31:38.839364
++Startsiden skal ligne en annonce side, hvad vil du forstå at man skal starte med at tilføje?
+
+# 2024-11-11 16:33:40.306226
++Startsiden skal ligne en annonce side, hvad vil du forstå at man skal starte med at tilføje?    
+
+# 2024-11-11 16:34:22.183416
++/add WebApp/Pages/Home.razor
+
+# 2024-11-11 16:34:49.437473
++/add WebApp/wwwroot/css/app.css
+
+# 2024-11-11 16:35:04.286501
++Startsiden skal ligne en annonce side, hvad vil du forstå at man skal starte med at tilføje?      
+
+# 2024-11-11 18:04:07.298757
++Hvad er fejlen?
+
+# 2024-11-11 18:04:38.830985
++/add ServerAPI1/Repositories/PostRepository.cs
+
+# 2024-11-11 18:04:46.316400
++hvad er fejlen i denne fil?
+
+# 2024-11-11 18:17:46.963367
++/undo
+
+# 2024-11-11 19:29:04.122114
++/add
+
+# 2024-11-11 19:29:16.603759
++/add WebApp/wwwroot/css/app.css
+
+# 2024-11-11 19:29:21.438938
++/undo
+
+# 2024-11-11 19:30:30.727042
++/add WebApp/Pages/Home.razor
+
+# 2024-11-11 19:30:34.520752
++/undo

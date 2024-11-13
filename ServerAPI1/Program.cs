@@ -2,38 +2,39 @@ using ServerAPI1.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
-builder.Services.AddControllers();
-builder.Services.AddSingleton<IOrderRepository, OrderRepository>();
+// Tilføj CORS-politik
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("policy",
-        policy =>
-        {
-            policy.AllowAnyOrigin();
-            policy.AllowAnyHeader();
-            policy.AllowAnyMethod();
-        });
+    options.AddPolicy("AllowSpecificOrigin", policy =>
+    {
+        policy.WithOrigins("https://localhost:7147")  // Brug præcis din frontend URL her
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
 });
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+// Tilføj services til containeren
+builder.Services.AddControllers();
+builder.Services.AddSingleton<IOrderRepository, OrderRepository>();
+
+// Swagger-konfiguration for dokumentation
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Tilføj CORS-politik til middleware
+app.UseHttpsRedirection();
+app.UseCors("AllowSpecificOrigin");  // Bemærk at "AllowSpecificOrigin" bruges her
+app.UseAuthorization();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
-app.UseCors("policy");
-app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();
+
