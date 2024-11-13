@@ -1,5 +1,6 @@
 using System;
 using Core;
+using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
@@ -8,11 +9,13 @@ namespace ServerAPI1.Repositories
     public class OrderRepository : IOrderRepository
 
 	{
-        private IMongoClient client;
+        private readonly IMongoClient client;
+        private readonly ILogger<OrderRepository> _logger;
         private IMongoCollection<Order> collection;
 
-        public OrderRepository()
+        public OrderRepository(ILogger<OrderRepository> logger)
 		{
+            _logger = logger;
             var password = ""; //add
             var mongoUri = $"mongodb+srv://fguldbaek:EmX759ivZyR6VZgD@cluster0.ravrm.mongodb.net/";
             
@@ -49,7 +52,15 @@ namespace ServerAPI1.Repositories
         
         public Order[] GetAll()
         {
-           return collection.Find(Builders<Order>.Filter.Empty).ToList().ToArray();
+            try
+            {
+                return collection.Find(Builders<Order>.Filter.Empty).ToList().ToArray();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while retrieving all orders.");
+                throw;
+            }
         }
         
 
