@@ -72,7 +72,10 @@ namespace ServerAPI1.Repositories
         {
             try
             {
-                return collection.Find(Builders<Order>.Filter.Empty).ToList().ToArray();
+                _logger.LogInformation("Attempting to retrieve all orders from the database.");
+                var orders = collection.Find(Builders<Order>.Filter.Empty).ToList().ToArray();
+                _logger.LogInformation("Successfully retrieved {Count} orders from the database.", orders.Length);
+                return orders;
             }
             catch (Exception ex)
             {
