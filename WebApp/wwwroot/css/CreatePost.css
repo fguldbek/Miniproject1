@@ -58,10 +58,8 @@
     word-spacing: 1px;
     font-weight: normal;
     letter-spacing: 2px;
-    display: grid;
-    grid-template-columns: 1fr max-content 1fr;
-    grid-template-rows: 27px 0;
-    grid-gap: 20px;
+    display: flex;
+    justify-content: center;
     align-items: center;
     border-bottom: 1px solid #ccc;
     border-top: 1px solid #ccc;
