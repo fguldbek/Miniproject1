@@ -36,19 +36,35 @@ namespace ServerAPI1.Repositories
 
         public void AddItem(Order item)
         {
-            var max = 0;
-            if (collection.Count(Builders<Order>.Filter.Empty) > 0)
+            try
             {
-                max = collection.Find(Builders<Order>.Filter.Empty).SortByDescending(r => r.Id).Limit(1).ToList()[0].Id;
+                var max = 0;
+                if (collection.Count(Builders<Order>.Filter.Empty) > 0)
+                {
+                    max = collection.Find(Builders<Order>.Filter.Empty).SortByDescending(r => r.Id).Limit(1).ToList()[0].Id;
+                }
+                item.Id = max + 1;
+                collection.InsertOne(item);
             }
-            item.Id = max + 1;
-            collection.InsertOne(item);
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while adding an item.");
+                throw;
+            }
            
         }
         
         public void DeleteById(int id){
-            var deleteResult = collection
-                .DeleteOne(Builders<Order>.Filter.Where(r => r.Id == id));
+            try
+            {
+                var deleteResult = collection
+                    .DeleteOne(Builders<Order>.Filter.Where(r => r.Id == id));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while deleting an item with ID {Id}.", id);
+                throw;
+            }
         }
 
         
@@ -71,16 +87,32 @@ namespace ServerAPI1.Repositories
         //Finder alle ordre, hvor Buyer Id matcher aka købs historik 
         public Order[] GetAllByUserId(int buyerId)
         {
-            var filter = Builders<Order>.Filter.Eq(order => User.BuyerId, buyerId);
-            return collection.Find(filter).ToList().ToArray();
+            try
+            {
+                var filter = Builders<Order>.Filter.Eq(order => User.BuyerId, buyerId);
+                return collection.Find(filter).ToList().ToArray();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while retrieving orders for user ID {BuyerId}.", buyerId);
+                throw;
+            }
         }
 
         public void UpdateItem(Order item)
         {
-            var updateDef = Builders<Order>.Update
-                .Set(x => x.Amount, item.Amount);
-            
-            collection.UpdateOne(x => x.Id == item.Id, updateDef);
+            try
+            {
+                var updateDef = Builders<Order>.Update
+                    .Set(x => x.Amount, item.Amount);
+                
+                collection.UpdateOne(x => x.Id == item.Id, updateDef);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while updating an item with ID {Id}.", item.Id);
+                throw;
+            }
         }
     }
 }
