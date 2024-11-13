@@ -19,18 +19,26 @@ namespace ServerAPI1.Repositories
             var password = ""; //add
             _logger.LogInformation("Initializing MongoDB client.");
             var mongoUri = $"mongodb+srv://fguldbaek:EmX759ivZyR6VZgD@cluster0.ravrm.mongodb.net/";
-            
-            client = new MongoClient(mongoUri);
-                
-            // Provide the name of the database and collection you want to use.
-            // If they don't already exist, the driver and Atlas will create them
-            // automatically when you first write data.
-            var dbName = "Miniprojekt";
-            var collectionName = "Orders";
+            _logger.LogInformation("MongoDB URI: {MongoUri}", mongoUri);
 
-            _logger.LogInformation("Connecting to database: {DatabaseName}, Collection: {CollectionName}", dbName, collectionName);
-            collection = client.GetDatabase(dbName)
-               .GetCollection<Order>(collectionName);
+            try
+            {
+                client = new MongoClient(mongoUri);
+                _logger.LogInformation("MongoDB client initialized successfully.");
+
+                var dbName = "Miniprojekt";
+                var collectionName = "Orders";
+
+                _logger.LogInformation("Connecting to database: {DatabaseName}, Collection: {CollectionName}", dbName, collectionName);
+                collection = client.GetDatabase(dbName)
+                   .GetCollection<Order>(collectionName);
+                _logger.LogInformation("Connected to MongoDB collection successfully.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while initializing MongoDB client or connecting to the collection.");
+                throw;
+            }
 
         }
 
