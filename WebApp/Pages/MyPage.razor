@@ -1,11 +1,11 @@
-@page "/mypage"
-@using Miniproject1.Service
-@inject ILoginService LoginService
-@inject NavigationManager NavManager
+@page "/MyPage"
+@using Miniproject1.Components
+@inject Miniproject1.Service.ILoginService LoginService
+@inject NavigationManager navManager
+
+<h3>My Page</h3>
+
 <OrderDisplay></OrderDisplay>
-
-
-
 
 @code {
     protected override async Task OnInitializedAsync()
@@ -13,8 +13,11 @@
         var user = await LoginService.GetUserLoggedIn();
         if (user == null)
         {
-            Console.WriteLine("Log in to view your page");
-            NavManager.NavigateTo("/login");
+            // Naviger til login-siden med target = "MyPage" for at vise beskeden
+            navManager.NavigateTo("/login/MyPage");
+            return; // Stop yderligere udførelse, da brugeren ikke er logget ind
         }
+
+        // Hvis brugeren er logget ind, kan vi fortsætte med at loade siden som normalt
     }
 }
