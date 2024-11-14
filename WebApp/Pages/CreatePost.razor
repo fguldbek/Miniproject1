@@ -8,14 +8,13 @@
 <div class="header">
     <h1>Create an Ad</h1>
 </div>
-
 <table class="table table-striped">
     <thead>
         <tr>
             <th>Name</th>
             <th>Amount</th>
             <th>Price</th>
-            <th>Done</th>
+            <th>Status</th>
             <th>Category</th>
             <th>Room</th>
         </tr>
@@ -26,9 +25,9 @@
             <tr>
                 <td>@item.Name</td>
                 <td>@item.Amount</td>
-                <td>@item.Price</td>
+                <td>$@item.Price</td>
                 <td>@item.Status</td>
-                <th>@item.Category</th>
+                <td>@item.Category</td>
                 <td>@item.Room</td>
             </tr>
         }
@@ -103,7 +102,7 @@
     private Order[]? shoppingList = new Order[0];
 
     // adresse på server
-    private string serverUrl = "http://localhost:5144";
+    private string serverUrl = "http://localhost:5145";
     
     protected override async Task OnInitializedAsync()
     {
@@ -123,6 +122,25 @@
         shoppingItem = new(); // clear fields in form
     }
     
+    //Ændrer fil til string
+    private async Task HandleFileSelected(InputFileChangeEventArgs e)
+    {
+        //Hent den valgte fil
+        var file = e.File;
+
+        // Opret en buffer til at holde filens bytes
+        var buffer = new byte[file.Size];
+
+        //: Læs filens bytes ind i bufferet
+        using (var stream = file.OpenReadStream())
+        {
+            await stream.ReadAsync(buffer, 0, (int)file.Size);
+        }
+
+        // Konverter byte-array til en base64-streng og gem i shoppingItem
+        shoppingItem.ImageUrl = Convert.ToBase64String(buffer);
+    }
+
     private async Task DeleteShoppingItem(Order item)
     {
         await Http.DeleteAsync($"{serverUrl}/api/shopping/delete/{item.Id}");
