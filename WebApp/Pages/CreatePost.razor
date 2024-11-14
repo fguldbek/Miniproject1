@@ -110,7 +110,8 @@
     // adresse på server
     private string serverUrl = "http://localhost:5145";
     
-    public int? userId;
+    public int? UserId;
+    
 
     public async Task GetUserId()
     {
@@ -120,26 +121,26 @@
         // Debugging with Console.WriteLine
         if (user != null)
         {
-            userId = user.UserId;
-            Console.WriteLine($"User found: UserId = {userId}");
+            UserId = user.UserId;
+            Console.WriteLine($"User found: UserId = {UserId}");
         }
         else
         {
-            userId = null;
+            UserId = null;
             Console.WriteLine("User not found in localStorage");
         }
     }
     
     protected override async Task OnInitializedAsync()
     {
-        GetUserId();
         var user = await LoginService.GetUserLoggedIn();
         if (user is null)
         {
             navManager.NavigateTo("login/CreatePost");
         }
-        
-        shoppingList = await Http.GetFromJsonAsync<Order[]>($"{serverUrl}/api/shopping/getall");
+
+        await GetUserId();
+        shoppingList = await Http.GetFromJsonAsync<Order[]>($"{serverUrl}/api/shopping/getall/");
     }
 
     public async Task HandleValidSubmit()
@@ -149,11 +150,23 @@
 
     private async Task AddShoppingItem()
     {
+        // Log the userId and shoppingItem before submitting
+        Console.WriteLine($"UserId: {UserId}"); // Check the userId
+        shoppingItem.UserId = UserId ?? 0;  // Ensure that UserId is set
+
+        // Log the shoppingItem object to confirm that it includes UserId
+        Console.WriteLine($"Shopping Item: {shoppingItem.Name}, UserId: {shoppingItem.UserId}");
+
+        // Send the shoppingItem to the server
         await Http.PostAsJsonAsync<Order>($"{serverUrl}/api/shopping/add", shoppingItem);
-        Console.WriteLine("Klient: add " + shoppingItem.Name + " " + shoppingItem.Price);
+
+        // Refresh the shopping list after adding the item
         shoppingList = await Http.GetFromJsonAsync<Order[]>($"{serverUrl}/api/shopping/getall");
-        shoppingItem = new(); // clear fields in form
+
+        // Clear the form fields
+        shoppingItem = new();
     }
+
     
     //Ændrer fil til string
     private async Task HandleFileSelected(InputFileChangeEventArgs e)

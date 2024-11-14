@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace Core
 {
     public class Order
@@ -5,9 +7,9 @@ namespace Core
         public int Id { get; set; }
         public string Name { get; set; } = "";
         
-        public string BuyerId { get; set; } = "";
+        public int BuyerId { get; set; }
         
-        public string UserId { get; set; } = "";
+        public int UserId { get; set; }
 
         public decimal Price { get; set; } = 0;
 

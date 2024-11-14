@@ -92,11 +92,26 @@ namespace ServerAPI1.Repositories
             }
         }
         
+        public Order[] GetAllByUserId(int UserId)
+        {
+            try
+            {
+                // Using MongoDB dot notation to access the nested 'User.BuyerId' field in the filter
+                var filter = Builders<Order>.Filter.Eq("User.UserId", UserId);
+                return collection.Find(filter).ToList().ToArray();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while retrieving orders for user ID {UserId}.", UserId);
+                throw;
+            }
+        }
+        
 
         
 
         //Finder alle ordre, hvor Buyer Id matcher aka købs historik 
-        public Order[] GetAllByUserId(int buyerId)
+        public Order[] GetAllByBuyerId(int buyerId)
         {
             try
             {

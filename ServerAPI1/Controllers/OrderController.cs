@@ -18,11 +18,25 @@ namespace ServerAPI1.Controllers
         }
 
         [HttpGet]
-        [Route("getall")]
+        [Route("getall/")]
         public IEnumerable<Order> GetAll(){
             try
             {
-                return mRepo.GetAll();
+                return mRepo.GetAll(); 
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while getting all orders. Exception: {Message}", ex.Message);
+                throw;
+            }
+        }
+        
+        [HttpGet]
+        [Route("GetAllByUserId/{UserId:int}")]
+        public IEnumerable<Order> GetAllByUserId(int UserId){
+            try
+            {
+                return mRepo.GetAllByUserId(UserId); 
             }
             catch (Exception ex)
             {
