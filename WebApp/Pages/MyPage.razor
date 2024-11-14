@@ -13,7 +13,7 @@
         var user = await LoginService.GetUserLoggedIn();
         if (user == null)
         {
-            Console.WriteLine("Log in to See your Page");
+            Console.WriteLine("Log in to view your page");
             NavManager.NavigateTo("/login");
         }
     }
