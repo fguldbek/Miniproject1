@@ -54,9 +54,10 @@
     </div>
 
     <div class="col-md-12 mb-3">
-        <label for="ImageUrl">Image Url</label>
-        <InputTextArea id="ImageUrl" @bind-Value="shoppingItem.ImageUrl" class="form-control" />
-    </div> 
+        <label for="ImageUpload">Upload Image</label>
+        <br/>
+        <InputFile OnChange="HandleFileSelected"/>
+    </div>
     
     
     <div class="col-12 mb-3">
@@ -144,23 +145,24 @@
     }
 
     
-    //Ændrer fil til string
     private async Task HandleFileSelected(InputFileChangeEventArgs e)
     {
-        //Hent den valgte fil
+        // Check for valgt fil
         var file = e.File;
-
-        // Opret en buffer til at holde filens bytes
-        var buffer = new byte[file.Size];
-
-        //: Læs filens bytes ind i bufferet
-        using (var stream = file.OpenReadStream())
+        if (file != null)
         {
-            await stream.ReadAsync(buffer, 0, (int)file.Size);
-        }
+            // Buffer til at holde filens bytes
+            var buffer = new byte[file.Size];
 
-        // Konverter byte-array til en base64-streng og gem i shoppingItem
-        shoppingItem.ImageUrl = Convert.ToBase64String(buffer);
+            // Læs bytes og konverter til base64-streng
+            using (var stream = file.OpenReadStream(maxAllowedSize: 10 * 1024 * 1024)) // max 10 MB
+            {
+                await stream.ReadAsync(buffer, 0, (int)file.Size);
+            }
+
+            // Konverter til base64 og gem i shoppingItem
+            shoppingItem.ImageUrl = Convert.ToBase64String(buffer);
+        }
     }
 
     private async Task DeleteShoppingItem(Order item)
