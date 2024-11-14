@@ -36,7 +36,7 @@ else
 // Hvis brugeren er logget ind, log dem ud og opdater knapteksten
 await LoginService.Logout();
 buttonText = "Log In";
-StateHasChanged(); // Opdaterer UI
+await InvokeAsync(StateHasChanged); // Opdaterer UI
 }
 }
 }
