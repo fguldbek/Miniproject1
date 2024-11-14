@@ -100,7 +100,8 @@ namespace ServerAPI1.Repositories
         {
             try
             {
-                var filter = Builders<Order>.Filter.Eq(order => User.BuyerId, buyerId);
+                // Using MongoDB dot notation to access the nested 'User.BuyerId' field in the filter
+                var filter = Builders<Order>.Filter.Eq("User.BuyerId", buyerId);
                 return collection.Find(filter).ToList().ToArray();
             }
             catch (Exception ex)

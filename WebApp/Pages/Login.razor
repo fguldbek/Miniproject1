@@ -1,13 +1,49 @@
-﻿@page "/Login"
+﻿@page "/login/{target:alpha}"
 @inject HttpClient Http
+@using Miniproject1.Service
+@inject ILoginService loginService 
+@inject NavigationManager NavManager
 
-<PageTitle>Weather</PageTitle>
 
-<h1>Weather</h1>
-
-<p>This component demonstrates fetching data from the server.</p>
-
+<h3>Login</h3>
+<div class="row justify-content-center">
+    <div class="col-md-6 mb-3"></div>
+    <label for="username">Username</label>
+    <InputText id="username" @bind-Value="username" placeholder="Write Username" class="form-control"/>
+</div>
+<div class="row justify-content-center">
+    <div class="col-md-6 mb-3"></div>
+    <label for="username">Password</label>
+    <InputText id="password" @bind-Value="password" placeholder="Write Password" class="form-control"/>
+</div>
+<div class="row justify-content-center">
+    <div class="col-md-6 mb-3"></div>
+    <button @onclick="OnClickLogin" class="btn btn-primary">Login</button>
+</div>
+<scan style="">@errortext</scan>
     
 @code {
-   
+    string username = "";
+    string password = "";
+    string errortext = "";
+    
+    [Parameter]
+    public string target { get; set; }
+
+    private async Task OnClickLogin()
+    {
+
+        var succes = await loginService.Login(username, password);
+        if (succes)
+        {
+            NavManager.NavigateTo(target);
+        }
+        else
+        {
+            errortext = "TRY AGAIN....";
+        }
+
+
+    }
+
 }

@@ -4,6 +4,8 @@ namespace Core
     {
         public int Id { get; set; }
         public string Name { get; set; } = "";
+        
+        public string BuyerId { get; set; } = "";
 
         public decimal Price { get; set; } = 0;
 
