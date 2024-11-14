@@ -3,50 +3,120 @@
 
 @if (orders == null)
 {
-    <p>Loading orders...</p>
+    <p>Loading Posts</p>
 }
 else
 {
-    <div class="row">
-        @foreach (var order in orders)
+    <div class="mb-3">
+        <!-- Dropdown menu til at vælge kategori -->
+        <label for="categorySelect" style="font-weight: bold; font-size: 1.1rem;">Select Category:</label>
+        <select id="categorySelect" class="form-control" @onchange="OnCategoryChanged" style="border-radius: 5px; padding: 10px; width: 100%; max-width: 300px; margin-bottom: 20px;">
+            <option value="">All Categories</option> <!-- Tilføjer en "Alle Kategorier" mulighed -->
+            @foreach (var category in availableCategories)
+            {
+                <option value="@category">@category</option>
+            }
+        </select>
+
+        <!-- Knapper til at sortere efter pris -->
+        <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+            <button class="btn" 
+                    @onclick="SortByPriceDescending"
+                    style="flex: 1; padding: 10px 20px; font-size: 1rem; border-radius: 5px; background-color: @(isDescending ? "blue" : "#6c757d"); color: white; border: none;">
+                Sort by Price (High to Low)
+            </button>
+            <button class="btn" 
+                    @onclick="SortByPriceAscending"
+                    style="flex: 1; padding: 10px 20px; font-size: 1rem; border-radius: 5px; background-color: @(isAscending ? "blue" : "#6c757d"); color: white; border: none;">
+                Sort by Price (Low to High)
+            </button>
+        </div>
+    </div>
+
+    <div class="row" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;">
+        @foreach (var order in filteredOrders)
         {
-            <div class="col-md-4 mb-4">
-                <div class="card" style="display: flex; flex-direction: column; height: 400px;">
-                    @if (!string.IsNullOrEmpty(order.ImageUrl))
-                    {
-                        <!-- Styling -->
-                        <img src="data:image/jpeg;base64,@order.ImageUrl" alt="Order image"
-                             style="width: 100%; height: 200px; object-fit: cover; object-position: center; border-top-left-radius: 0.25rem; border-top-right-radius: 0.25rem;" />
-                    }
-                    <div class="card-body" style="padding: 1rem; flex-grow: 1;">
-                        <h5 class="card-title">@order.Name</h5>
-                        <p class="card-text">
-                            <strong>Amount:</strong> @order.Amount<br />
-                            <strong>Price:</strong> $@order.Price<br />
-                            <strong>Status:</strong> @order.Status<br />
-                            <strong>Category:</strong> @order.Category<br />
-                            <strong>Room:</strong> @order.Room
-                        </p>
-                    </div>
+            <div class="card" style="display: flex; flex-direction: column; height: 450px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                @if (!string.IsNullOrEmpty(order.ImageUrl))
+                {
+                    <!-- Styling for image -->
+                    <img src="data:image/jpeg;base64,@order.ImageUrl" alt="Order image"
+                         style="width: 100%; height: 200px; object-fit: cover; object-position: center; border-top-left-radius: 10px; border-top-right-radius: 10px;"/>
+                }
+                <div class="card-body" style="flex-grow: 1; background-color: #f9f9f9; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; overflow: hidden;">
+                    <h5 class="card-title" style="font-size: 1.2rem; font-weight: bold; color: #333; margin-bottom: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">@order.Name</h5>
+                    <p class="card-text" style="font-size: 1rem; color: #555; line-height: 1.5; overflow: hidden; text-overflow: ellipsis; max-height: 120px;">
+                        <strong>Amount:</strong> @order.Amount<br />
+                        <strong>Price:</strong> $@order.Price<br />
+                        <strong>Status:</strong> @order.Status<br />
+                        <strong>Category:</strong> @order.Category<br />
+                        <strong>Room:</strong> @order.Room
+                    </p>
                 </div>
             </div>
         }
     </div>
 }
+
 @code {
     private Order[]? orders;
-
-    private string serverUrl = "http://localhost:5145"; // URL til API-serveren
+    private Order[] filteredOrders;
+    private List<string> availableCategories = new List<string>(); // Liste af tilgængelige kategorier
+    private string selectedCategory = "";
+    private bool isAscending = false; // For at tracke sortering efter billigste først
+    private bool isDescending = false; // For at tracke sortering efter dyreste først
+    private string serverUrl = "http://localhost:5145"; 
 
     protected override async Task OnInitializedAsync()
     {
         // Henter alle ordrer fra API
         orders = await Http.GetFromJsonAsync<Order[]>($"{serverUrl}/api/shopping/getall");
 
-        // Omvendt rækkefølge
+        // Henter tilgængelige kategorier
+        availableCategories = orders?.Select(order => order.Category).Distinct().ToList() ?? new List<string>();
+
+        // Omvendt rækkefølge (de nyeste ordrer først)
         if (orders != null)
         {
-            orders = orders.Reverse().ToArray();  // This reverses the order so the newest is at the top
+            orders = orders.Reverse().ToArray();
+            filteredOrders = orders; // Initialiserer med alle ordrer
+        }
+    }
+
+    // Filtrering efter kategori
+    private void OnCategoryChanged(ChangeEventArgs e)
+    {
+        selectedCategory = e.Value?.ToString() ?? "";
+        FilterOrders();
+    }
+
+    // Sortering af ordrer fra dyreste til billigste
+    private void SortByPriceDescending()
+    {
+        isDescending = true;
+        isAscending = false;
+        filteredOrders = filteredOrders.OrderByDescending(order => order.Price).ToArray();
+    }
+
+    // Sortering af ordrer fra billigste til dyreste
+    private void SortByPriceAscending()
+    {
+        isDescending = false;
+        isAscending = true;
+        filteredOrders = filteredOrders.OrderBy(order => order.Price).ToArray();
+    }
+
+    // Hjælpefunktion til at filtrere ordrerne
+    private void FilterOrders()
+    {
+        if (string.IsNullOrEmpty(selectedCategory))
+        {
+            filteredOrders = orders; // Hvis der ikke er valgt kategori, vis alle ordrer
+        }
+        else
+        {
+            filteredOrders = orders?.Where(order => order.Category == selectedCategory).ToArray() ?? Array.Empty<Order>();
         }
     }
 }
+
