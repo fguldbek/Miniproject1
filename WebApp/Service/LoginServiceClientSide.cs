@@ -1,5 +1,6 @@
 using Core;
 using Blazored.LocalStorage;
+using System.Threading.Tasks;
 
 namespace Miniproject1.Service;
 
@@ -20,29 +21,25 @@ public class LoginServiceClientSide : ILoginService
 
     public async Task<bool> Login(string username, string password)
     {
-        if (username.Equals("peter") && password.Equals("1234"))
+        // Opret en liste med godkendte brugere
+        var validUsers = new List<User>
         {
-            User user = new User { Username = username, Password = "verfied", Role = "admin", UserId = 1, BuyerId = 1 };
+            new User { Username = "Peter", Password = "1234", Role = "admin", UserId = 1, BuyerId = 1 },
+            new User { Username = "Kim", Password = "1234", Role = "admin", UserId = 2, BuyerId = 2 },
+            new User { Username = "Mette", Password = "1234", Role = "admin", UserId = 3, BuyerId = 3 }
+        };
 
+        // Tjek, om der findes en gyldig bruger med de indtastede credentials
+        var user = validUsers.FirstOrDefault(u => u.Username == username && u.Password == password);
+        
+        if (user != null)
+        {
+            // Gem brugeroplysninger i localStorage
             await localStorage.SetItemAsync("user", user);
             return true;
         }
-        if (username.Equals("peter") && password.Equals("1234"))
-        {
-            User user = new User { Username = username, Password = "verfied", Role = "admin", UserId = 2, BuyerId = 2};
-
-            await localStorage.SetItemAsync("user", user);
-            return true;
-        }
-        if (username.Equals("peter") && password.Equals("1234"))
-        {
-            User user = new User { Username = username, Password = "verfied", Role = "admin", UserId = 3, BuyerId = 3};
-
-            await localStorage.SetItemAsync("user", user);
-            return true;
-        }
+        
+        // Returnér false, hvis ingen brugere matchede
         return false;
-
     }
-
 }

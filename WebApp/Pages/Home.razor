@@ -1,9 +1,43 @@
 ﻿@page "/"
 @using System.Runtime.InteropServices
 @using Miniproject1.Components
+@inject NavigationManager NavManager
+@inject ILoginService LoginService
 
-<h1 >Explore all our Posts!</h1>
+<h1>Explore all our Posts!</h1>
 
-<OrderDisplay/>
+<OrderDisplay />
 
+<button @onclick="HandleLoginLogoutClick" class="btn btn-primary mt-3">
+    @buttonText
+</button>
+
+@code {
+private string buttonText = "Log In";
+
+protected override async Task OnInitializedAsync()
+{
+// Tjek om brugeren er logget ind, og opdater knapteksten
+var user = await LoginService.GetUserLoggedIn();
+buttonText = user == null ? "Log In" : "Log Out";
+}
+
+private async Task HandleLoginLogoutClick()
+{
+var user = await LoginService.GetUserLoggedIn();
+
+if (user == null)
+{
+// Hvis brugeren ikke er logget ind, naviger til login-siden
+NavManager.NavigateTo("/login/Home");
+}
+else
+{
+// Hvis brugeren er logget ind, log dem ud og opdater knapteksten
+await LoginService.Logout();
+buttonText = "Log In";
+StateHasChanged(); // Opdaterer UI
+}
+}
+}
 

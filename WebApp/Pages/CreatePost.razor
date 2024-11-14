@@ -9,8 +9,6 @@
 @inject ILocalStorageService localStorage
 @using Miniproject1.Components
 
-
-
 <h1>Create a Post</h1>
 
 <h2>Add</h2>
@@ -31,8 +29,6 @@
         <label for="Description">Description</label>
         <InputTextArea id="Description" @bind-Value="shoppingItem.Description" class="form-control" />
     </div>
-    
-
     <div class="col-md-12 mb-3">
         <label for="Category">Category</label>
         <select id="Category" @bind="shoppingItem.Category" class="form-control">
@@ -58,7 +54,6 @@
         <InputTextArea id="ImageUrl" @bind-Value="shoppingItem.ImageUrl" class="form-control" />
     </div> 
     
-    
     <div class="col-12 mb-3">
         <button type="submit" class="btn btn-primary">Add</button>
     </div>
@@ -68,32 +63,30 @@
 
 <OrderDisplay></OrderDisplay>
 
-
 @code {
     
-    //CategorySaver
     private List<string> CategoryOptions = new List<string> { "Clothing", "Electronics", "Furniture", "Plants", "Animals", "Food", "Cars", "Books","Other"}; 
     
-    //RoomPicker
+   
     private List<string> RoomOptions = new List<string> { "Room 12", "Room 74", "Room 102", "Room 132"};
 
-    // Objekt for formen der vises modal
+    
     private Order shoppingItem = new();
 
-    // container for listen
+    
     private Order[]? shoppingList = new Order[0];
 
-    // adresse på server
+   
     private string serverUrl = "http://localhost:5145";
     
     public int? userId;
 
     public async Task GetUserId()
     {
-        // Retrieve the "user" data from localStorage and deserialize it into a User object
+        
         var user = await localStorage.GetItemAsync<User>("user");
 
-        // Debugging with Console.WriteLine
+        
         if (user != null)
         {
             userId = user.UserId;
@@ -108,13 +101,16 @@
     
     protected override async Task OnInitializedAsync()
     {
-        GetUserId();
         var user = await LoginService.GetUserLoggedIn();
-        if (user is null)
+        if (user == null)
         {
-            navManager.NavigateTo("login/CreatePost");
+           
+            navManager.NavigateTo("/login/CreatePost");
+            return; // Stopper yderligere udførelse, da brugeren ikke er logget ind
         }
-        
+
+        // Hvis brugeren er logget ind, fortsætter vi med at loade siden som normalt
+        await GetUserId();
         shoppingList = await Http.GetFromJsonAsync<Order[]>($"{serverUrl}/api/shopping/getall");
     }
 
@@ -128,34 +124,31 @@
         await Http.PostAsJsonAsync<Order>($"{serverUrl}/api/shopping/add", shoppingItem);
         Console.WriteLine("Klient: add " + shoppingItem.Name + " " + shoppingItem.Price);
         shoppingList = await Http.GetFromJsonAsync<Order[]>($"{serverUrl}/api/shopping/getall");
-        shoppingItem = new(); // clear fields in form
+        shoppingItem = new(); 
     }
     
-    //Ændrer fil til string
+   
     private async Task HandleFileSelected(InputFileChangeEventArgs e)
     {
-        //Hent den valgte fil
+        
         var file = e.File;
 
-        // Opret en buffer til at holde filens bytes
+        
         var buffer = new byte[file.Size];
 
-        //: Læs filens bytes ind i bufferet
+       
         using (var stream = file.OpenReadStream())
         {
             await stream.ReadAsync(buffer, 0, (int)file.Size);
         }
 
-        // Konverter byte-array til en base64-streng og gem i shoppingItem
+        
         shoppingItem.ImageUrl = Convert.ToBase64String(buffer);
     }
 
     private async Task DeleteShoppingItem(Order item)
     {
         await Http.DeleteAsync($"{serverUrl}/api/shopping/delete/{item.Id}");
-
         shoppingList = await Http.GetFromJsonAsync<Order[]>($"{serverUrl}/api/shopping/getall");
     }
-
 }
-
