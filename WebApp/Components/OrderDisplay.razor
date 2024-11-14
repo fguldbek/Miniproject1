@@ -14,7 +14,7 @@ else
                 <div class="card" style="display: flex; flex-direction: column; height: 400px;">
                     @if (!string.IsNullOrEmpty(order.ImageUrl))
                     {
-                        <!-- Apply inline CSS for image -->
+                        <!-- Styling til billedet -->
                         <img src="data:image/jpeg;base64,@order.ImageUrl" alt="Order image"
                              style="width: 100%; height: 200px; object-fit: cover; object-position: center; border-top-left-radius: 0.25rem; border-top-right-radius: 0.25rem;" />
                     }
@@ -44,10 +44,10 @@ else
         // Henter alle ordrer fra API
         orders = await Http.GetFromJsonAsync<Order[]>($"{serverUrl}/api/shopping/getall");
 
-        // Reverse the order of items (newest first)
+        // Omvendt rækkefølge så nyeste kommer først 
         if (orders != null)
         {
-            orders = orders.Reverse().ToArray();  // This reverses the order so the newest is at the top
+            orders = orders.Reverse().ToArray(); 
         }
     }
 }
