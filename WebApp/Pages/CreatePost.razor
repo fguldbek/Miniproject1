@@ -1,7 +1,10 @@
 @page "/CreatePost"
 @using Core;
+@using Miniproject1.Service
 @inject HttpClient Http;
 @inject NavigationManager navigationManager
+@inject ILoginService LoginService 
+@inject NavigationManager navManager 
 
 
 
@@ -106,6 +109,12 @@
     
     protected override async Task OnInitializedAsync()
     {
+        var user = await LoginService.GetUserLoggedIn();
+        if (user is null)
+        {
+            navManager.NavigateTo("login/CreatePost");
+        }
+        
         shoppingList = await Http.GetFromJsonAsync<Order[]>($"{serverUrl}/api/shopping/getall");
     }
 
