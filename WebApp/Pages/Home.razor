@@ -18,8 +18,15 @@ private string buttonText = "Log In";
 protected override async Task OnInitializedAsync()
 {
 // Tjek om brugeren er logget ind, og opdater knapteksten
-var user = await LoginService.GetUserLoggedIn();
-buttonText = user == null ? "Log In" : "Log Out";
+try
+{
+    var user = await LoginService.GetUserLoggedIn();
+    buttonText = user == null ? "Log In" : "Log Out";
+}
+catch (Exception ex)
+{
+    Console.WriteLine($"Error during initialization: {ex.Message}");
+}
 }
 
 private async Task HandleLoginLogoutClick()
@@ -34,9 +41,16 @@ NavManager.NavigateTo("/login/Home");
 else
 {
 // Hvis brugeren er logget ind, log dem ud og opdater knapteksten
-await LoginService.Logout();
-buttonText = "Log In";
-await InvokeAsync(StateHasChanged); // Opdaterer UI
+try
+{
+    await LoginService.Logout();
+    buttonText = "Log In";
+    await InvokeAsync(StateHasChanged); // Opdaterer UI
+}
+catch (Exception ex)
+{
+    Console.WriteLine($"Error during logout: {ex.Message}");
+}
 }
 }
 }
