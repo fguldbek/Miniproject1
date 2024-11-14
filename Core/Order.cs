@@ -8,8 +8,8 @@ namespace Core
         public string Name { get; set; } = "";
         
         public int BuyerId { get; set; }
-        
-        public int UserId { get; set; }
+
+        public int UserId { get; set; } = 0;
 
         public decimal Price { get; set; } = 0;
 

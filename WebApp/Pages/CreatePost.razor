@@ -9,8 +9,6 @@
 @inject ILocalStorageService localStorage
 @using Miniproject1.Components
 
-
-
 <h1>Create a Post</h1>
 
 <h2>Add</h2>
@@ -32,7 +30,6 @@
         <InputTextArea id="Description" @bind-Value="shoppingItem.Description" class="form-control" />
     </div>
     
-
     <div class="col-md-12 mb-3">
         <label for="Category">Category</label>
         <select id="Category" @bind="shoppingItem.Category" class="form-control">
@@ -59,7 +56,6 @@
         <InputFile OnChange="HandleFileSelected"/>
     </div>
     
-    
     <div class="col-12 mb-3">
         <button type="submit" class="btn btn-primary">Add</button>
     </div>
@@ -67,51 +63,47 @@
 
 <h3>Created Posts</h3>
 
-<OrderDisplay></OrderDisplay>
-
+@if (isLoggedIn)
+{
+    <OrderDisplay></OrderDisplay>
+}
+else
+{
+    <p>You must be logged in to view your posts.</p>
+}
 
 @code {
-    
-    //CategorySaver
-    private List<string> CategoryOptions = new List<string> { "Clothing", "Electronics", "Furniture", "Plants", "Animals", "Food", "Cars", "Books","Other"}; 
-    
-    //RoomPicker
+    private List<string> CategoryOptions = new List<string> { "Clothing", "Electronics", "Furniture", "Plants", "Animals", "Food", "Cars", "Books", "Other"}; 
     private List<string> RoomOptions = new List<string> { "Room 12", "Room 74", "Room 102", "Room 132"};
 
-    // Objekt for formen der vises modal
     private Order shoppingItem = new();
-
-    // container for listen
     private Order[]? shoppingList = new Order[0];
-
-    // adresse på server
     private string serverUrl = "http://localhost:5145";
     
     public int? UserId;
-    
+    private bool isLoggedIn = false;
 
     public async Task GetUserId()
     {
-        // Retrieve the "user" data from localStorage and deserialize it into a User object
         var user = await localStorage.GetItemAsync<User>("user");
-
-        // Debugging with Console.WriteLine
         if (user != null)
         {
             UserId = user.UserId;
+            isLoggedIn = true;
             Console.WriteLine($"User found: UserId = {UserId}");
         }
         else
         {
             UserId = null;
+            isLoggedIn = false;
             Console.WriteLine("User not found in localStorage");
         }
     }
-    
+
     protected override async Task OnInitializedAsync()
     {
         var user = await LoginService.GetUserLoggedIn();
-        if (user is null)
+        if (user == null)
         {
             navManager.NavigateTo("login/CreatePost");
         }
@@ -127,40 +119,26 @@
 
     private async Task AddShoppingItem()
     {
-        // Log the userId and shoppingItem before submitting
-        Console.WriteLine($"UserId: {UserId}"); // Check the userId
-        shoppingItem.UserId = UserId ?? 0;  // Ensure that UserId is set
-
-        // Log the shoppingItem object to confirm that it includes UserId
+        Console.WriteLine($"UserId: {UserId}");
+        shoppingItem.UserId = UserId ?? 0;
         Console.WriteLine($"Shopping Item: {shoppingItem.Name}, UserId: {shoppingItem.UserId}");
 
-        // Send the shoppingItem to the server
         await Http.PostAsJsonAsync<Order>($"{serverUrl}/api/shopping/add", shoppingItem);
 
-        // Refresh the shopping list after adding the item
         shoppingList = await Http.GetFromJsonAsync<Order[]>($"{serverUrl}/api/shopping/getall");
-
-        // Clear the form fields
         shoppingItem = new();
     }
 
-    
     private async Task HandleFileSelected(InputFileChangeEventArgs e)
     {
-        // Check for valgt fil
         var file = e.File;
         if (file != null)
         {
-            // Buffer til at holde filens bytes
             var buffer = new byte[file.Size];
-
-            // Læs bytes og konverter til base64-streng
-            using (var stream = file.OpenReadStream(maxAllowedSize: 10 * 1024 * 1024)) // max 10 MB
+            using (var stream = file.OpenReadStream(maxAllowedSize: 10 * 1024 * 1024))
             {
                 await stream.ReadAsync(buffer, 0, (int)file.Size);
             }
-
-            // Konverter til base64 og gem i shoppingItem
             shoppingItem.ImageUrl = Convert.ToBase64String(buffer);
         }
     }
@@ -168,9 +146,6 @@
     private async Task DeleteShoppingItem(Order item)
     {
         await Http.DeleteAsync($"{serverUrl}/api/shopping/delete/{item.Id}");
-
         shoppingList = await Http.GetFromJsonAsync<Order[]>($"{serverUrl}/api/shopping/getall");
     }
-
 }
-

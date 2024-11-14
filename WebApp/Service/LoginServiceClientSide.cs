@@ -27,14 +27,14 @@ public class LoginServiceClientSide : ILoginService
             await localStorage.SetItemAsync("user", user);
             return true;
         }
-        if (username.Equals("peter") && password.Equals("1234"))
+        if (username.Equals("kent") && password.Equals("1234"))
         {
             User user = new User { Username = username, Password = "verfied", Role = "admin", UserId = 2, BuyerId = 2};
 
             await localStorage.SetItemAsync("user", user);
             return true;
         }
-        if (username.Equals("peter") && password.Equals("1234"))
+        if (username.Equals("johan") && password.Equals("1234"))
         {
             User user = new User { Username = username, Password = "verfied", Role = "admin", UserId = 3, BuyerId = 3};
 

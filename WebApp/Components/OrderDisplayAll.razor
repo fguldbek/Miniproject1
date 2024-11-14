@@ -69,32 +69,12 @@ else
     private bool isDescending = false; // For at tracke sortering efter dyreste først
     private string serverUrl = "http://localhost:5145"; 
     
-    public int? UserId;
     
-
-    public async Task GetUserId()
-    {
-        // Retrieve the "user" data from localStorage and deserialize it into a User object
-        var user = await localStorage.GetItemAsync<User>("user");
-
-        // Debugging with Console.WriteLine
-        if (user != null)
-        {
-            UserId = user.UserId;
-            Console.WriteLine($"User found: UserId = {UserId}");
-        }
-        else
-        {
-            UserId = null;
-            Console.WriteLine("User not found in localStorage");
-        }
-    }
 
     protected override async Task OnInitializedAsync()
     {
-        await GetUserId();
         // Henter alle ordrer fra API
-        orders = await Http.GetFromJsonAsync<Order[]>($"{serverUrl}/api/shopping/GetAllByUserId/{UserId}");
+        orders = await Http.GetFromJsonAsync<Order[]>($"{serverUrl}/api/shopping/getall");
 
         // Henter tilgængelige kategorier
         availableCategories = orders?.Select(order => order.Category).Distinct().ToList() ?? new List<string>();

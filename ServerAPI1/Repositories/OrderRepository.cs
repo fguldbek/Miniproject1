@@ -97,7 +97,7 @@ namespace ServerAPI1.Repositories
             try
             {
                 // Using MongoDB dot notation to access the nested 'User.BuyerId' field in the filter
-                var filter = Builders<Order>.Filter.Eq("User.UserId", UserId);
+                var filter = Builders<Order>.Filter.Eq("UserId", UserId);
                 return collection.Find(filter).ToList().ToArray();
             }
             catch (Exception ex)
