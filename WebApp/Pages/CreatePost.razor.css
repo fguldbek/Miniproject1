@@ -48,7 +48,7 @@
 
 .header h1 {
     text-align: center;
-    font-size: 30px;
+    font-size: 50px;
     text-transform: uppercase;
     color: #222;
     letter-spacing: 1px;
@@ -56,12 +56,14 @@
     font-weight: 400;
     margin-top: 5px;
     word-spacing: 1px;
-    font-weight: normal;
     letter-spacing: 2px;
+    font-family: "Raleway", sans-serif;
+    font-weight: 500;
     display: flex;
-    justify-content: center;
-    align-items: center;
-    border-bottom: 1px solid #ccc;
+    justify-content: center; /* Centrerer teksten horisontalt */
+    align-items: center; /* Centrerer teksten vertikalt */
     border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    padding: 10px;
     background-color: #f8f8f8;
 }
