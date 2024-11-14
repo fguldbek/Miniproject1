@@ -12,13 +12,12 @@ namespace Core
         public string Description { get; set; } = "";
         
         public string? ImageUrl { get; set; }
-        
-        public string? Category { get; set; }
-        
-        public string Room { get; set; }
 
-        public bool Done { get; set; } = false;
+        public string? Category { get; set; } = "Clothing";
+
+        public string Room { get; set; } = "Room 12";
         
+        public bool Status { get; set; } = true; 
 
     }
 }
