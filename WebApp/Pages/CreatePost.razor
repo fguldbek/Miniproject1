@@ -4,7 +4,10 @@
 @inject HttpClient Http;
 @inject NavigationManager navigationManager
 @inject ILoginService LoginService 
-@inject NavigationManager navManager 
+@inject NavigationManager navManager
+@using Blazored.LocalStorage
+@inject ILocalStorageService localStorage
+
 
 
 
@@ -63,7 +66,7 @@
         <select id="Category" @bind="shoppingItem.Category" class="form-control">
             @foreach(var cat in CategoryOptions)
             {
-            <option value="@cat">@cat</option>
+                <option value="@cat">@cat</option>
             }
         </select>
     </div>
@@ -107,8 +110,29 @@
     // adresse på server
     private string serverUrl = "http://localhost:5145";
     
+    public int? userId;
+
+    public async Task GetUserId()
+    {
+        // Retrieve the "user" data from localStorage and deserialize it into a User object
+        var user = await localStorage.GetItemAsync<User>("user");
+
+        // Debugging with Console.WriteLine
+        if (user != null)
+        {
+            userId = user.UserId;
+            Console.WriteLine($"User found: UserId = {userId}");
+        }
+        else
+        {
+            userId = null;
+            Console.WriteLine("User not found in localStorage");
+        }
+    }
+    
     protected override async Task OnInitializedAsync()
     {
+        GetUserId();
         var user = await LoginService.GetUserLoggedIn();
         if (user is null)
         {

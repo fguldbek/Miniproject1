@@ -41,8 +41,8 @@ public class LoginServiceClientSide : ILoginService
             await localStorage.SetItemAsync("user", user);
             return true;
         }
-
         return false;
 
     }
+
 }

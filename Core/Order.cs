@@ -6,6 +6,8 @@ namespace Core
         public string Name { get; set; } = "";
         
         public string BuyerId { get; set; } = "";
+        
+        public string UserId { get; set; } = "";
 
         public decimal Price { get; set; } = 0;
 
