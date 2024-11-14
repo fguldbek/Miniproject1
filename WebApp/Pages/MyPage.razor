@@ -1,16 +1,11 @@
-@page "/MyPage"
-@using Miniproject1.Components
-<h3>MyPage</h3>
-
-<OrderDisplay></OrderDisplay>
-@code {
-    
-}@page "/mypage"
+@page "/mypage"
 @using Miniproject1.Service
 @inject ILoginService LoginService
 @inject NavigationManager NavManager
+<OrderDisplay></OrderDisplay>
 
-<h3>My Page</h3>
+
+
 
 @code {
     protected override async Task OnInitializedAsync()
