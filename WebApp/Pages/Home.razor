@@ -8,7 +8,15 @@
 
 <OrderDisplay />
 
-<button @onclick="HandleLoginLogoutClick" class="btn btn-primary mt-3">
+<style>
+    .login-button {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+    }
+</style>
+
+<button @onclick="HandleLoginLogoutClick" class="btn btn-primary mt-3 login-button">
     @buttonText
 </button>
 
