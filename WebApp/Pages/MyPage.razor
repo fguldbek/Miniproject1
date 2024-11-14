@@ -5,4 +5,20 @@
 <OrderDisplay></OrderDisplay>
 @code {
     
+}@page "/mypage"
+@using Miniproject1.Service
+@inject ILoginService LoginService
+@inject NavigationManager NavManager
+
+<h3>My Page</h3>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        var user = await LoginService.GetUserLoggedIn();
+        if (user == null)
+        {
+            NavManager.NavigateTo("/login");
+        }
+    }
 }
