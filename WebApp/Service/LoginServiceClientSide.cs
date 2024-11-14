@@ -42,4 +42,8 @@ public class LoginServiceClientSide : ILoginService
         // Returnér false, hvis ingen brugere matchede
         return false;
     }
+    public async Task Logout()
+    {
+        await localStorage.RemoveItemAsync("user");
+    }
 }
