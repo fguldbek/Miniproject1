@@ -8,13 +8,16 @@
 
 @if (!string.IsNullOrEmpty(target)) 
 {
-    <p style="color: gray;">Log in to create a post</p>
+    // Viser en besked til brugeren afhængigt af hvilken side de forsøgte at tilgå
+    <p style="color: gray;">
+        @("Log in to " + (target == "CreatePost" ? "create a post" : target == "MyPage" ? "view your page" : "access this page"))
+    </p>
 }
 
 <div class="row justify-content-center">
     <div class="col-md-6 mb-3"></div>
-<label for="username">Username</label>
-<InputText id="username" @bind-Value="username" placeholder="Write Username" class="form-control"/>
+    <label for="username">Username</label>
+    <InputText id="username" @bind-Value="username" placeholder="Write Username" class="form-control"/>
 </div>
 <div class="row justify-content-center">
     <div class="col-md-6 mb-3"></div>
@@ -33,14 +36,14 @@
     string errortext = "";
 
     [Parameter]
-    public string? target { get; set; } 
+    public string? target { get; set; } // Modtager 'target' parameteren for at vise besked
 
     private async Task OnClickLogin()
     {
         var success = await loginService.Login(username, password);
         if (success)
         {
-            // Naviger til target-siden, hvis den er sat, ellers til forsiden
+            // Navigerer til target-siden efter vellykket login
             if (!string.IsNullOrEmpty(target))
             {
                 NavManager.NavigateTo("/" + target);

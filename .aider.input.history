@@ -1,1 +1,61 @@
 +git merge
+
+# 2024-11-14 20:31:42.798936
++n
+
+# 2024-11-14 20:33:06.603572
++/add WebApp/Pages/Home.razor
+
+# 2024-11-14 20:33:16.846375
++hvad er fejlen?
+
+# 2024-11-14 20:33:48.653261
++y
+
+# 2024-11-14 20:35:38.162830
++det virkede ikke
+
+# 2024-11-14 20:36:13.110996
++der er stadig fejl 
+
+# 2024-11-14 20:37:18.462825
++kan du rette syntaksfejl i Home.rezor siden
+
+# 2024-11-14 20:37:58.766461
++der er stadig fejl
+
+# 2024-11-14 20:38:15.773558
++/undo
+
+# 2024-11-14 20:38:31.349239
++Hvad er fejlen i linje 5?
+
+# 2024-11-14 20:39:28.217358
++fejlen på linje 5 er væk, men hvorfor er den stadig rød?
+
+# 2024-11-14 20:39:47.795328
++/undo
+
+# 2024-11-14 20:43:13.294498
++Kan du flytte "login" knappen øverst til høre af siden
+
+# 2024-11-14 20:54:32.964648
++Kan du også gøre sådan, at jeg skal logge ind for at kunne komme ind på "Mypage" ligesom det er i "CreatePost"
+
+# 2024-11-14 20:56:37.667203
++y
+
+# 2024-11-14 20:59:28.330428
++Kan du ikke side "Log in to See your Page" ligesom der skrives "Log in to create a post" i CreatePost siden 
+
+# 2024-11-14 21:01:32.989389
++det fungerede ikke 
+
+# 2024-11-14 21:02:49.572452
++/undo
+
+# 2024-11-14 21:44:58.688858
++hvorfor kan jeg ikke Apply mine ændringer
+
+# 2024-11-14 21:45:17.153080
++/undo
