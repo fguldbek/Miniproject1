@@ -36,6 +36,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.MapControllers();
-
+app.UseCors("policy");
 app.Run();
 
