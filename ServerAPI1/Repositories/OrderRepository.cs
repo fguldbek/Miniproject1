@@ -59,7 +59,6 @@ namespace ServerAPI1.Repositories
                 _logger.LogError(ex, "An error occurred while adding an item.");
                 throw;
             }
-           
         }
         
         public void DeleteById(int id){
