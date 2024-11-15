@@ -32,8 +32,8 @@ namespace Core
         
         [Required]
         public string Room { get; set; } = "Room 12";
-        
-        public bool Status { get; set; } = true; 
+
+        public string Status { get; set; } = "For Sale";
 
     }
 }

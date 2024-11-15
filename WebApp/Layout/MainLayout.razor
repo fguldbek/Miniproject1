@@ -6,9 +6,14 @@
 
     <main>
         <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
+            <NavLink class="nav-link" href="MyPage" ActiveClass="active">
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> My Page
+            </NavLink>
+            <NavLink class="nav-link" href="Login" ActiveClass="active">
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Login
+            </NavLink>
         </div>
-
+     
         <article class="content px-4">
             @Body
         </article>
