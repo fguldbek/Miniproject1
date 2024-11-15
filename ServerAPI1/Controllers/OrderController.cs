@@ -31,6 +31,48 @@ namespace ServerAPI1.Controllers
             }
         }
         
+        [HttpPut("markaspurchased/{id}")]
+        public IActionResult MarkAsPurchased(int id)
+        {
+            try
+            {
+                mRepo.MarkAsPurchased(id);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpPut("reserve/{id}")]
+        public IActionResult Reserve(int id)
+        {
+            try
+            {
+                mRepo.ReserveItem(id);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpPut("undoreserve/{id}")]
+        public IActionResult UndoReserve(int id)
+        {
+            try
+            {
+                mRepo.UndoReservation(id);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+        
         [HttpGet]
         [Route("GetAllByUserId/{UserId:int}")]
         public IEnumerable<Order> GetAllByUserId(int UserId){

@@ -106,6 +106,49 @@ namespace ServerAPI1.Repositories
             }
         }
         
+        public void MarkAsPurchased(int id)
+        {
+            try
+            {
+                var updateDef = Builders<Order>.Update.Set(x => x.Status, "Purchased");
+                collection.UpdateOne(x => x.Id == id, updateDef);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while marking order with ID {Id} as purchased.", id);
+                throw;
+            }
+        }
+
+        public void ReserveItem(int id)
+        {
+            try
+            {
+                var updateDef = Builders<Order>.Update.Set(x => x.Status, "Reserved");
+                collection.UpdateOne(x => x.Id == id, updateDef);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while reserving order with ID {Id}.", id);
+                throw;
+            }
+        }
+
+        public void UndoReservation(int id)
+        {
+            try
+            {
+                var updateDef = Builders<Order>.Update.Set(x => x.Status, "For Sale");
+                collection.UpdateOne(x => x.Id == id, updateDef);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while undoing reservation for order with ID {Id}.", id);
+                throw;
+            }
+        }
+
+        
 
         
 

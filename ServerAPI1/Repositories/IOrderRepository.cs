@@ -16,6 +16,10 @@ namespace ServerAPI1.Repositories
         // Fjerner item, hvor item.Id = id. Hvis den ikke
         // findes, sker ingenting
         void DeleteById(int id);
+        
+        void MarkAsPurchased(int id);
+        void ReserveItem(int id);
+        void UndoReservation(int id);
 
         Order[] GetAll();
 

@@ -54,6 +54,19 @@ else
                         <strong>Category:</strong> @order.Category<br />
                         <strong>Room:</strong> @order.Room
                     </p>
+
+                    <button
+                        @onclick="() => MarkAsPurchased(order.Id)"
+                        style="display: inline-block; margin-right: 10px; padding: 10px 20px; background-color: blue; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                        Buy
+                    </button>
+
+                    <button
+                        @onclick="() => ToggleReservation(order)"
+                        style="display: inline-block; margin-right: 10px; padding: 10px 20px; background-color: orange; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                        @(order.Status == "Reserved" ? "Undo Reserve" : "Reserve")
+                    </button>
+
                 </div>
             </div>
         }
@@ -62,12 +75,36 @@ else
 
 @code {
     private Order[]? orders;
-    private Order[] filteredOrders;
+    private Order[] filteredOrders = Array.Empty<Order>();
     private List<string> availableCategories = new List<string>(); // Liste af tilgængelige kategorier
     private string selectedCategory = "";
     private bool isAscending = false; // For at tracke sortering efter billigste først
     private bool isDescending = false; // For at tracke sortering efter dyreste først
     private string serverUrl = "http://localhost:5145"; 
+    
+    
+    private async Task MarkAsPurchased(int orderId)
+    {
+        var response = await Http.PutAsync($"{serverUrl}/api/shopping/markaspurchased/{orderId}", null);
+        if (response.IsSuccessStatusCode)
+        {
+            var order = orders.FirstOrDefault(o => o.Id == orderId);
+            if (order != null)
+            {
+                order.Status = "Purchased";
+            }
+        }
+    }
+
+    private async Task ToggleReservation(Order order)
+    {
+        string action = order.Status == "Reserved" ? "undoreserve" : "reserve";
+        var response = await Http.PutAsync($"{serverUrl}/api/shopping/{action}/{order.Id}", null);
+        if (response.IsSuccessStatusCode)
+        {
+            order.Status = action == "reserve" ? "Reserved" : "For Sale";
+        }
+    }
     
     
 
