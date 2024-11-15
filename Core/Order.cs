@@ -21,7 +21,7 @@ namespace Core
         public int Amount { get; set; } = 1;
         
         [Required]
-        [StringLength(50, MinimumLength = 5, ErrorMessage = "You need to have a description")]
+        [StringLength(100, MinimumLength = 5, ErrorMessage = "You need to have a description")]
         public string Description { get; set; } = "";
         
         [Required]
