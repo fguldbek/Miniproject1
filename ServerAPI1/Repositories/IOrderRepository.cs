@@ -23,7 +23,10 @@ namespace ServerAPI1.Repositories
 
         Order[] GetAll();
 
-        Order[] GetAllByUserId(int buyerId);
+        Order[] GetAllByUserId(int UserId);
+        
+        Order[] GetAllByBuyerId(int BuyerId);
+
         
         // Opdaterer element med Id = item.Id.
         void UpdateItem(Order item);

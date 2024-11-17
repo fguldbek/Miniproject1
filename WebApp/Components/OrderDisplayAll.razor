@@ -109,7 +109,6 @@ else
     private string serverUrl = "http://localhost:5145"; 
     
     public int? BuyerId;
-    
 
     public async Task GetBuyerId()
     {
@@ -129,8 +128,6 @@ else
         }
     }
 
-    
-    
     private async Task MarkAsPurchased(int orderId)
     {
         if (BuyerId == null)
@@ -139,14 +136,21 @@ else
             return;
         }
 
-        var response = await Http.PutAsync(
-            $"{serverUrl}/api/shopping/markaspurchased/{orderId}?buyerId={BuyerId}", null
-        );
-
-        if (response.IsSuccessStatusCode)
+        var order = orders.FirstOrDefault(o => o.Id == orderId);
+        if (order != null)
         {
-            var order = orders.FirstOrDefault(o => o.Id == orderId);
-            if (order != null)
+            // Check if the order is reserved and if the current buyer is not the one who reserved it
+            if (order.Status == "Reserved" && order.BuyerId != BuyerId)
+            {
+                Console.WriteLine("This item is reserved by another buyer.");
+                return; 
+            }
+
+            var response = await Http.PutAsync(
+                $"{serverUrl}/api/shopping/markaspurchased/{orderId}?buyerId={BuyerId}", null
+            );
+
+            if (response.IsSuccessStatusCode)
             {
                 order.Status = "Purchased";
             }
@@ -177,9 +181,6 @@ else
         }
     }
 
-
-
-    
     protected override async Task OnInitializedAsync()
     {
         await GetBuyerId();
@@ -211,15 +212,15 @@ else
 
     private void SortByPriceDescending()
     {
-        filteredOrders = filteredOrders.OrderByDescending(o => o.Price).ToArray();
         isDescending = true;
         isAscending = false;
+        filteredOrders = filteredOrders.OrderByDescending(order => order.Price).ToArray();
     }
 
     private void SortByPriceAscending()
     {
-        filteredOrders = filteredOrders.OrderBy(o => o.Price).ToArray();
-        isAscending = true;
         isDescending = false;
+        isAscending = true;
+        filteredOrders = filteredOrders.OrderBy(order => order.Price).ToArray();
     }
 }

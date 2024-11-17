@@ -175,24 +175,21 @@ namespace ServerAPI1.Repositories
                 throw;
             }
         }
-
-
         
-
         
 
         //Finder alle ordre, hvor Buyer Id matcher aka købs historik 
-        public Order[] GetAllByBuyerId(int buyerId)
+        public Order[] GetAllByBuyerId(int BuyerId)
         {
             try
             {
                 // Using MongoDB dot notation to access the nested 'User.BuyerId' field in the filter
-                var filter = Builders<Order>.Filter.Eq("User.BuyerId", buyerId);
+                var filter = Builders<Order>.Filter.Eq("User.BuyerId", BuyerId);
                 return collection.Find(filter).ToList().ToArray();
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while retrieving orders for user ID {BuyerId}.", buyerId);
+                _logger.LogError(ex, "An error occurred while retrieving orders for user ID {BuyerId}.", BuyerId);
                 throw;
             }
         }

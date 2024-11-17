@@ -101,6 +101,20 @@ namespace ServerAPI1.Controllers
             }
         }
         
+        [HttpGet]
+        [Route("GetAllByBuyerId/{BuyerId:int}")]
+        public IEnumerable<Order> GetAllByBuyerId(int BuyerId){
+            try
+            {
+                return mRepo.GetAllByUserId(BuyerId); 
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while getting all orders. Exception: {Message}", ex.Message);
+                throw;
+            }
+        }
+        
 
         [HttpPost]
         [Route("add")]
