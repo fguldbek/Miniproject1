@@ -11,7 +11,13 @@
 
 <h1>Create a Post</h1>
 
-<h2>Add</h2>
+@if (!string.IsNullOrEmpty(userMessage))
+{
+<div class="alert alert-info" role="alert">
+    @userMessage
+</div>
+}
+
 
 <EditForm Model="@shoppingItem" class="row p-3" OnValidSubmit="@HandleValidSubmit">
     <DataAnnotationsValidator />
@@ -61,16 +67,7 @@
     </div>
 </EditForm>
 
-<h3>My Posts</h3>
 
-@if (isLoggedIn)
-{
-    <OrderDisplay></OrderDisplay>
-}
-else
-{
-    <p>You must be logged in to view your posts.</p>
-}
 
 @code {
     private List<string> CategoryOptions = new List<string> { "Clothing", "Electronics", "Furniture", "Plants", "Animals", "Food", "Cars", "Books", "Other"}; 
@@ -79,6 +76,10 @@ else
     private Order shoppingItem = new();
     private Order[]? shoppingList = new Order[0];
     private string serverUrl = "http://localhost:5145";
+    private string userMessage = ""; // Holds the message to display
+
+    
+    
     
     public int? UserId;
     private bool isLoggedIn = false;
@@ -113,8 +114,12 @@ else
     }
 
     public async Task HandleValidSubmit()
-    {
+    {   
+        userMessage = "You made a post";
+        await ShowMessageAsync(userMessage);
+
         await AddShoppingItem();
+
     }
 
     private async Task AddShoppingItem()
@@ -148,4 +153,12 @@ else
         await Http.DeleteAsync($"{serverUrl}/api/shopping/delete/{item.Id}");
         shoppingList = await Http.GetFromJsonAsync<Order[]>($"{serverUrl}/api/shopping/getall");
     }
+    
+    private async Task ShowMessageAsync(string message)
+    {
+        userMessage = message;
+        await Task.Delay(800); // Show the message for 3 seconds
+        userMessage = ""; // Clear the message
+    }
+
 }
