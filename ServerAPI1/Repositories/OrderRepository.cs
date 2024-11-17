@@ -61,13 +61,18 @@ namespace ServerAPI1.Repositories
             }
         }
         
-        public void DeleteById(int id){
-            try
+        public void DeleteById(int id) 
+        {
+            try 
             {
-                var deleteResult = collection
-                    .DeleteOne(Builders<Order>.Filter.Where(r => r.Id == id));
-            }
-            catch (Exception ex)
+                var deleteResult = collection.DeleteOne(Builders<Order>.Filter.Where(r => r.Id == id));
+
+                if (deleteResult.DeletedCount == 0) 
+                {
+                    throw new KeyNotFoundException($"No item found with ID {id} to delete.");
+                }
+            } 
+            catch (Exception ex) 
             {
                 _logger.LogError(ex, "An error occurred while deleting an item with ID {Id}.", id);
                 throw;

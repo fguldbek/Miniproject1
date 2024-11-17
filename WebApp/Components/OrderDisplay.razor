@@ -30,27 +30,38 @@ else
     </div>
 
     <div class="row" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;">
-        @foreach (var order in filteredOrders)
+
+        @if (isActive = true)
         {
-            <div class="card" style="display: flex; flex-direction: column; height: 450px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
-                @if (!string.IsNullOrEmpty(order.ImageUrl))
-                {
-                    <img src="data:image/jpeg;base64,@order.ImageUrl" alt="Order image" style="width: 100%; height: 200px; object-fit: cover; object-position: center; border-top-left-radius: 10px; border-top-right-radius: 10px;"/>
-                }
-                <div class="card-body" style="flex-grow: 1; background-color: #f9f9f9; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; overflow: hidden;">
-                    <h5 class="card-title" style="font-size: 1.2rem; font-weight: bold; color: #333; margin-bottom: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">@order.Name</h5>
-                    <p class="card-text" style="font-size: 1rem; color: #555; line-height: 1.5; overflow: hidden; text-overflow: ellipsis; max-height: 120px;">
-                        <strong>Amount:</strong> @order.Amount<br />
-                        <strong>Price:</strong> $@order.Price<br />
-                        <strong>Status:</strong> @order.Status<br />
-                        <strong>Category:</strong> @order.Category<br />
-                        <strong>Description:</strong> @order.Description<br />
-                        <strong>Room:</strong> @order.Room
-                    </p>
-                    <button class="btn btn-primary me-2" @onclick="() => StartEdit(order)">Edit</button>
+            @foreach (var order in filteredOrders)
+            {
+                <div class="card" style="display: flex; flex-direction: column; height: 450px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                    @if (!string.IsNullOrEmpty(order.ImageUrl))
+                    {
+                        <img src="data:image/jpeg;base64,@order.ImageUrl" alt="Order image" style="width: 100%; height: 200px; object-fit: cover; object-position: center; border-top-left-radius: 10px; border-top-right-radius: 10px;"/>
+                    }
+                    <div class="card-body" style="flex-grow: 1; background-color: #f9f9f9; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; overflow: hidden;">
+                        <h5 class="card-title" style="font-size: 1.2rem; font-weight: bold; color: #333; margin-bottom: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">@order.Name</h5>
+                        <p class="card-text" style="font-size: 1rem; color: #555; line-height: 1.5; overflow: hidden; text-overflow: ellipsis; max-height: 120px;">
+                            <strong>Amount:</strong> @order.Amount<br/>
+                            <strong>Price:</strong> $@order.Price<br/>
+                            <strong>Status:</strong> @order.Status<br/>
+                            <strong>Category:</strong> @order.Category<br/>
+                            <strong>Description:</strong> @order.Description<br/>
+                            <strong>Room:</strong> @order.Room
+                        </p>
+                        <button class="btn btn-primary me-2" @onclick="() => StartEdit(order)">Edit</button>
+                        <button class="btn btn-primary me-2" @onclick="() => Delete(order.Id)">Delete</button>
+                        
+
+                    </div>
                 </div>
-            </div>
+            }
+            
         }
+         
+        
+
     </div>
 }
 
@@ -113,6 +124,8 @@ else
     private bool isDescending = false; 
     private Order? editingOrder; 
     private bool isEditing = false; 
+    private bool isActive = true; 
+
 
     private string serverUrl = "http://localhost:5145"; 
     public int? UserId;
@@ -215,6 +228,26 @@ else
             }
         }
     }
+
+    private async Task Delete(int id)
+    {
+        var response = await Http.DeleteAsync($"{serverUrl}/api/shopping/delete/{id}");
+        isActive = false;
+
+        if (response.IsSuccessStatusCode)
+        {
+            Console.WriteLine($"Item with ID {id} deleted successfully.");
+            // Remove the deleted item from the UI
+            orders = orders?.Where(order => order.Id != id).ToArray();
+            FilterOrders(); // Refresh the filtered list based on current filt
+        }
+        else
+        {
+            Console.WriteLine($"Failed to delete item. Status code: {response.StatusCode}");
+        }
+    }
+
+
 
     private void CancelEdit()
     {

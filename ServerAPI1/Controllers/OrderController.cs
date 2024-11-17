@@ -124,9 +124,20 @@ namespace ServerAPI1.Controllers
 
         [HttpDelete]
         [Route("delete/{id:int}")]
-        public void DeleteItem(int id) {
-            mRepo.DeleteById(id);
+        public IActionResult DeleteItem(int id) 
+        {
+            try 
+            {
+                mRepo.DeleteById(id); // Call repository method to delete the item.
+                return Ok(new { Message = $"Item with ID {id} deleted successfully." });
+            } 
+            catch (Exception ex) 
+            {
+                _logger.LogError(ex, "An error occurred while deleting an item with ID {Id}.", id);
+                return StatusCode(500, "Internal Server Error"); // Respond with an appropriate error code.
+            }
         }
+
 
         [HttpPut]
         [Route("update")]
