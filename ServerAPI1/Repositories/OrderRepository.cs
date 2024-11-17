@@ -130,12 +130,20 @@ namespace ServerAPI1.Repositories
         }
 
 
-        public void ReserveItem(int id)
+        public void ReserveItem(int id, int buyerId)
         {
             try
             {
-                var updateDef = Builders<Order>.Update.Set(x => x.Status, "Reserved");
-                collection.UpdateOne(x => x.Id == id, updateDef);
+                var updateDef = Builders<Order>.Update
+                    .Set(x => x.Status, "Reserved")
+                    .Set(x => x.BuyerId, buyerId);  // Set the BuyerId when reserving the item
+
+                var result = collection.UpdateOne(x => x.Id == id, updateDef);
+
+                if (result.ModifiedCount == 0)
+                {
+                    throw new Exception($"No order found with ID {id} or it was already reserved.");
+                }
             }
             catch (Exception ex)
             {
@@ -144,12 +152,22 @@ namespace ServerAPI1.Repositories
             }
         }
 
+
+
         public void UndoReservation(int id)
         {
             try
             {
-                var updateDef = Builders<Order>.Update.Set(x => x.Status, "For Sale");
-                collection.UpdateOne(x => x.Id == id, updateDef);
+                var updateDef = Builders<Order>.Update
+                    .Set(x => x.Status, "For Sale")
+                    .Set(x => x.BuyerId, 0);  // Reset the BuyerId to 0 when undoing the reservation
+
+                var result = collection.UpdateOne(x => x.Id == id, updateDef);
+
+                if (result.ModifiedCount == 0)
+                {
+                    throw new Exception($"No order found with ID {id} or it was not reserved.");
+                }
             }
             catch (Exception ex)
             {
@@ -157,6 +175,7 @@ namespace ServerAPI1.Repositories
                 throw;
             }
         }
+
 
         
 

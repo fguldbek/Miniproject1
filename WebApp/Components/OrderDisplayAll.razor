@@ -55,18 +55,44 @@ else
                         <strong>Room:</strong> @order.Room
                     </p>
 
-                    <button
-                        @onclick="() => MarkAsPurchased(order.Id)"
-                        style="display: inline-block; margin-right: 10px; padding: 10px 20px; background-color: blue; color: white; border: none; border-radius: 5px; cursor: pointer;">
-                        Buy
-                    </button>
+                    @if (order.Status != "Purchased")
+                    {
+                        <!-- "Buy" button only appears if the order is not purchased -->
+                        <button
+                            @onclick="() => MarkAsPurchased(order.Id)"
+                            style="display: inline-block; margin-right: 10px; padding: 10px 20px; background-color: blue; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                            Buy
+                        </button>
+                    }
+                    else
+                    {
+                        <!-- Sold button if the order is already purchased -->
+                        <button
+                            style="display: inline-block; margin-right: 10px; padding: 10px 20px; background-color: grey; color: white; border: none; border-radius: 5px; cursor: not-allowed;" disabled>
+                            Sold
+                        </button>
+                    }
 
-                    <button
-                        @onclick="() => ToggleReservation(order)"
-                        style="display: inline-block; margin-right: 10px; padding: 10px 20px; background-color: orange; color: white; border: none; border-radius: 5px; cursor: pointer;">
-                        @(order.Status == "Reserved" ? "Undo Reserve" : "Reserve")
-                    </button>
-
+                    @if (order.Status != "Purchased")
+                    {
+                        <!-- Only show 'Reserve' or 'Undo Reserve' button for the current buyer -->
+                        @if (order.Status == "Reserved" && order.BuyerId == BuyerId)
+                        {
+                            <button
+                                @onclick="() => ToggleReservation(order)"
+                                style="display: inline-block; margin-right: 10px; padding: 10px 20px; background-color: orange; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                                Undo Reserve
+                            </button>
+                        }
+                        else if (order.Status != "Reserved")
+                        {
+                            <button
+                                @onclick="() => ToggleReservation(order)"
+                                style="display: inline-block; margin-right: 10px; padding: 10px 20px; background-color: orange; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                                Reserve
+                            </button>
+                        }
+                    }
                 </div>
             </div>
         }
@@ -127,19 +153,33 @@ else
         }
     }
 
-
     private async Task ToggleReservation(Order order)
     {
-        string action = order.Status == "Reserved" ? "undoreserve" : "reserve";
-        var response = await Http.PutAsync($"{serverUrl}/api/shopping/{action}/{order.Id}", null);
-        if (response.IsSuccessStatusCode)
+        if (order.Status == "Reserved" && order.BuyerId == BuyerId)
         {
-            order.Status = action == "reserve" ? "Reserved" : "For Sale";
+            // Undo reservation
+            string action = "undoreserve";
+            var response = await Http.PutAsync($"{serverUrl}/api/shopping/{action}/{order.Id}", null);
+            if (response.IsSuccessStatusCode)
+            {
+                order.Status = "For Sale"; // Change status to "For Sale"
+            }
+        }
+        else if (order.Status != "Reserved")
+        {
+            // Reserve the order
+            string action = "reserve";
+            var response = await Http.PutAsync($"{serverUrl}/api/shopping/{action}/{order.Id}?buyerId={BuyerId}", null);
+            if (response.IsSuccessStatusCode)
+            {
+                order.Status = "Reserved"; // Change status to "Reserved"
+            }
         }
     }
-    
-    
 
+
+
+    
     protected override async Task OnInitializedAsync()
     {
         await GetBuyerId();
@@ -148,50 +188,38 @@ else
 
         // Henter tilgængelige kategorier
         availableCategories = orders?.Select(order => order.Category).Distinct().ToList() ?? new List<string>();
-
-        // Omvendt rækkefølge (de nyeste ordrer først)
-        if (orders != null)
-        {
-            orders = orders.Reverse().ToArray();
-            filteredOrders = orders; // Initialiserer med alle ordrer
-        }
+        filteredOrders = orders;
     }
 
-    // Filtrering efter kategori
     private void OnCategoryChanged(ChangeEventArgs e)
     {
         selectedCategory = e.Value?.ToString() ?? "";
         FilterOrders();
     }
 
-    // Sortering af ordrer fra dyreste til billigste
-    private void SortByPriceDescending()
-    {
-        isDescending = true;
-        isAscending = false;
-        filteredOrders = filteredOrders.OrderByDescending(order => order.Price).ToArray();
-    }
-
-    // Sortering af ordrer fra billigste til dyreste
-    private void SortByPriceAscending()
-    {
-        isDescending = false;
-        isAscending = true;
-        filteredOrders = filteredOrders.OrderBy(order => order.Price).ToArray();
-    }
-
-    // Filtrere ordrerne
     private void FilterOrders()
     {
         if (string.IsNullOrEmpty(selectedCategory))
         {
-            filteredOrders = orders; // Hvis der ikke er valgt kategori, vis alle ordrer
+            filteredOrders = orders ?? Array.Empty<Order>();
         }
         else
         {
             filteredOrders = orders?.Where(order => order.Category == selectedCategory).ToArray() ?? Array.Empty<Order>();
         }
     }
-    
-}
 
+    private void SortByPriceDescending()
+    {
+        filteredOrders = filteredOrders.OrderByDescending(o => o.Price).ToArray();
+        isDescending = true;
+        isAscending = false;
+    }
+
+    private void SortByPriceAscending()
+    {
+        filteredOrders = filteredOrders.OrderBy(o => o.Price).ToArray();
+        isAscending = true;
+        isDescending = false;
+    }
+}

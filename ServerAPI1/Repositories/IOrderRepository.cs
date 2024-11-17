@@ -18,7 +18,7 @@ namespace ServerAPI1.Repositories
         void DeleteById(int id);
         
         void MarkAsPurchased(int id, int BuyerId);
-        void ReserveItem(int id);
+        void ReserveItem(int id, int buyerId);
         void UndoReservation(int id);
 
         Order[] GetAll();

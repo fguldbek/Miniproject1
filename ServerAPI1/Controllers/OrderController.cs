@@ -55,11 +55,11 @@ namespace ServerAPI1.Controllers
 
 
         [HttpPut("reserve/{id}")]
-        public IActionResult Reserve(int id)
+        public IActionResult Reserve(int id, [FromQuery] int buyerId)
         {
             try
             {
-                mRepo.ReserveItem(id);
+                mRepo.ReserveItem(id, buyerId);  // Pass the buyerId along with id when reserving
                 return Ok();
             }
             catch (Exception ex)
@@ -68,12 +68,15 @@ namespace ServerAPI1.Controllers
             }
         }
 
+
+
+
         [HttpPut("undoreserve/{id}")]
         public IActionResult UndoReserve(int id)
         {
             try
             {
-                mRepo.UndoReservation(id);
+                mRepo.UndoReservation(id);  // This will reset the BuyerId to 0
                 return Ok();
             }
             catch (Exception ex)
@@ -81,6 +84,8 @@ namespace ServerAPI1.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+
+
         
         [HttpGet]
         [Route("GetAllByUserId/{UserId:int}")]
