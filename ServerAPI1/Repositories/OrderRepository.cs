@@ -106,12 +106,21 @@ namespace ServerAPI1.Repositories
             }
         }
         
-        public void MarkAsPurchased(int id)
+        public void MarkAsPurchased(int id, int BuyerId)
         {
             try
             {
-                var updateDef = Builders<Order>.Update.Set(x => x.Status, "Purchased");
-                collection.UpdateOne(x => x.Id == id, updateDef);
+                var updateDef = Builders<Order>.Update
+                    .Set(x => x.Status, "Purchased")
+                    .Set(x => x.BuyerId, BuyerId);
+        
+                var result = collection.UpdateOne(x => x.Id == id, updateDef);
+
+                // Optionally, check if any document was modified (this can be logged or handled here if needed)
+                if (result.ModifiedCount == 0)
+                {
+                    _logger.LogWarning($"No order found with ID {id} to mark as purchased.");
+                }
             }
             catch (Exception ex)
             {
@@ -119,6 +128,7 @@ namespace ServerAPI1.Repositories
                 throw;
             }
         }
+
 
         public void ReserveItem(int id)
         {
