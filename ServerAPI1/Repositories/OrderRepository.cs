@@ -180,18 +180,17 @@ namespace ServerAPI1.Repositories
 
         public void UpdateItem(Order item)
         {
-            try
-            {
-                var updateDef = Builders<Order>.Update
-                    .Set(x => x.Amount, item.Amount);
-                
-                collection.UpdateOne(x => x.Id == item.Id, updateDef);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "An error occurred while updating an item with ID {Id}.", item.Id);
-                throw;
-            }
+            var updateDef = Builders<Order>.Update
+                .Set(x => x.Name, item.Name)
+                .Set(x => x.Amount, item.Amount)
+                .Set(x => x.Price, item.Price)
+                .Set(x => x.Description, item.Description)
+                .Set(x => x.Status, item.Status)
+                .Set(x => x.Category, item.Category)
+                .Set(x => x.Room, item.Room)
+                .Set(x => x.ImageUrl, item.ImageUrl); // Sørg for at ImageUrl er med
+
+            collection.UpdateOne(x => x.Id == item.Id, updateDef);
         }
     }
 }

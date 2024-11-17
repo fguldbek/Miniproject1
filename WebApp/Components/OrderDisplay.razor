@@ -5,31 +5,25 @@
 
 @if (orders == null)
 {
-    <p>Loading Posts</p>
+    <p>Loading Posts...</p>
 }
 else
 {
     <div class="mb-3">
-        <!-- Dropdown menu til at vælge kategori -->
         <label for="categorySelect" style="font-weight: bold; font-size: 1.1rem;">Select Category:</label>
         <select id="categorySelect" class="form-control" @onchange="OnCategoryChanged" style="border-radius: 5px; padding: 10px; width: 100%; max-width: 300px; margin-bottom: 20px;">
-            <option value="">All Categories</option> <!-- Tilføjer en "Alle Kategorier" mulighed -->
+            <option value="">All Categories</option> 
             @foreach (var category in availableCategories)
             {
                 <option value="@category">@category</option>
             }
         </select>
 
-        <!-- Knapper til at sortere efter pris -->
         <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-            <button class="btn" 
-                    @onclick="SortByPriceDescending"
-                    style="flex: 1; padding: 10px 20px; font-size: 1rem; border-radius: 5px; background-color: @(isDescending ? "#6495ED" : "#6c757d"); color: white; border: none;">
+            <button class="btn" @onclick="SortByPriceDescending" style="flex: 1; padding: 10px 20px; font-size: 1rem; border-radius: 5px; background-color: @(isDescending ? "#6495ED" : "#6c757d"); color: white; border: none;">
                 Sort by Price (High to Low)
             </button>
-            <button class="btn" 
-                    @onclick="SortByPriceAscending"
-                    style="flex: 1; padding: 10px 20px; font-size: 1rem; border-radius: 5px; background-color: @(isAscending ? "#6495ED" : "#6c757d"); color: white; border: none;">
+            <button class="btn" @onclick="SortByPriceAscending" style="flex: 1; padding: 10px 20px; font-size: 1rem; border-radius: 5px; background-color: @(isAscending ? "#6495ED" : "#6c757d"); color: white; border: none;">
                 Sort by Price (Low to High)
             </button>
         </div>
@@ -41,9 +35,7 @@ else
             <div class="card" style="display: flex; flex-direction: column; height: 450px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
                 @if (!string.IsNullOrEmpty(order.ImageUrl))
                 {
-                    <!-- Styling for image -->
-                    <img src="data:image/jpeg;base64,@order.ImageUrl" alt="Order image"
-                         style="width: 100%; height: 200px; object-fit: cover; object-position: center; border-top-left-radius: 10px; border-top-right-radius: 10px;"/>
+                    <img src="data:image/jpeg;base64,@order.ImageUrl" alt="Order image" style="width: 100%; height: 200px; object-fit: cover; object-position: center; border-top-left-radius: 10px; border-top-right-radius: 10px;"/>
                 }
                 <div class="card-body" style="flex-grow: 1; background-color: #f9f9f9; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; overflow: hidden;">
                     <h5 class="card-title" style="font-size: 1.2rem; font-weight: bold; color: #333; margin-bottom: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">@order.Name</h5>
@@ -53,21 +45,21 @@ else
                         <strong>Status:</strong> @order.Status<br />
                         <strong>Category:</strong> @order.Category<br />
                         <strong>Description:</strong> @order.Description<br />
-
                         <strong>Room:</strong> @order.Room
                     </p>
                     <button class="btn btn-primary me-2" @onclick="() => StartEdit(order)">Edit</button>
-
                 </div>
             </div>
         }
     </div>
 }
+
 @if (isEditing && editingOrder != null)
 {
 <EditForm Model="editingOrder" OnValidSubmit="HandleEditSubmit" class="p-4 mb-4" style="border: 1px solid #ccc; border-radius: 10px; background-color: #f9f9f9;">
     <DataAnnotationsValidator />
     <ValidationSummary />
+    
     <div class="mb-3">
         <label for="Name">Name</label>
         <InputText id="Name" @bind-Value="editingOrder.Name" class="form-control" />
@@ -81,7 +73,7 @@ else
         <InputNumber id="Price" @bind-Value="editingOrder.Price" class="form-control" />
     </div>
     <div class="mb-3">
-        <label for="Name">Description</label>
+        <label for="Description">Description</label>
         <InputText id="Description" @bind-Value="editingOrder.Description" class="form-control" />
     </div>
     <div class="mb-3">
@@ -89,7 +81,7 @@ else
         <select id="Category" @bind="editingOrder.Category" class="form-control">
             @foreach (var category in availableCategories)
             {
-            <option value="@category">@category</option>
+                <option value="@category">@category</option>
             }
         </select>
     </div>
@@ -102,33 +94,32 @@ else
             <option value="Room 132">Room 132</option>
         </select>
     </div>
+    <div class="mb-3">
+        <label for="ImageUrl">Image URL</label>
+        <InputText id="ImageUrl" @bind-Value="editingOrder.ImageUrl" class="form-control" placeholder="Enter image URL" />
+    </div>
+
     <button type="submit" class="btn btn-success">Save</button>
     <button type="button" class="btn btn-secondary ms-2" @onclick="CancelEdit">Cancel</button>
 </EditForm>
 }
 
-
 @code {
     private Order[]? orders;
     private Order[] filteredOrders;
-    private List<string> availableCategories = new List<string>(); // Liste af tilgængelige kategorier
+    private List<string> availableCategories = new List<string>(); 
     private string selectedCategory = "";
-    private bool isAscending = false; // For at tracke sortering efter billigste først
-    private bool isDescending = false; // For at tracke sortering efter dyreste først
-    private Order? editingOrder; // Holds the currently selected order for editing
-    private bool isEditing = false; // Flag to control the visibility of the edit form
+    private bool isAscending = false; 
+    private bool isDescending = false; 
+    private Order? editingOrder; 
+    private bool isEditing = false; 
 
     private string serverUrl = "http://localhost:5145"; 
-    
     public int? UserId;
-    
 
     public async Task GetUserId()
     {
-        // Retrieve the "user" data from localStorage and deserialize it into a User object
         var user = await localStorage.GetItemAsync<User>("user");
-
-        // Debugging with Console.WriteLine
         if (user != null)
         {
             UserId = user.UserId;
@@ -144,28 +135,22 @@ else
     protected override async Task OnInitializedAsync()
     {
         await GetUserId();
-        // Henter alle ordrer fra API
         orders = await Http.GetFromJsonAsync<Order[]>($"{serverUrl}/api/shopping/GetAllByUserId/{UserId}");
-
-        // Henter tilgængelige kategorier
         availableCategories = orders?.Select(order => order.Category).Distinct().ToList() ?? new List<string>();
 
-        // Omvendt rækkefølge (de nyeste ordrer først)
         if (orders != null)
         {
             orders = orders.Reverse().ToArray();
-            filteredOrders = orders; // Initialiserer med alle ordrer
+            filteredOrders = orders; 
         }
     }
 
-    // Filtrering efter kategori
     private void OnCategoryChanged(ChangeEventArgs e)
     {
         selectedCategory = e.Value?.ToString() ?? "";
         FilterOrders();
     }
 
-    // Sortering af ordrer fra dyreste til billigste
     private void SortByPriceDescending()
     {
         isDescending = true;
@@ -173,7 +158,6 @@ else
         filteredOrders = filteredOrders.OrderByDescending(order => order.Price).ToArray();
     }
 
-    // Sortering af ordrer fra billigste til dyreste
     private void SortByPriceAscending()
     {
         isDescending = false;
@@ -181,51 +165,48 @@ else
         filteredOrders = filteredOrders.OrderBy(order => order.Price).ToArray();
     }
 
-    // Filtrere ordrerne
     private void FilterOrders()
     {
         if (string.IsNullOrEmpty(selectedCategory))
         {
-            filteredOrders = orders; // Hvis der ikke er valgt kategori, vis alle ordrer
+            filteredOrders = orders; 
         }
         else
         {
-            filteredOrders = orders?.Where(order => order.Category == selectedCategory).ToArray() ?? Array.Empty<Order>();
+            filteredOrders = orders?.Where(order => order.Category == selectedCategory).ToArray();
         }
     }
+
     private void StartEdit(Order order)
     {
-        // Clone the selected order to avoid modifying the original data
         editingOrder = new Order
         {
             Id = order.Id,
             Name = order.Name,
             Amount = order.Amount,
             Price = order.Price,
-            Status = order.Status,
+            Description = order.Description,
             Category = order.Category,
             Room = order.Room,
-            ImageUrl = order.ImageUrl
+            ImageUrl = order.ImageUrl // Include the ImageUrl in the edit model
         };
-        isEditing = true; // Show the edit form
+        isEditing = true;
     }
+
     private async Task HandleEditSubmit()
     {
         if (editingOrder != null)
         {
             var response = await Http.PutAsJsonAsync($"{serverUrl}/api/shopping/update", editingOrder);
-
             if (response.IsSuccessStatusCode)
             {
-                // Update the local orders list
                 var index = Array.FindIndex(orders, o => o.Id == editingOrder.Id);
                 if (index >= 0)
                 {
                     orders[index] = editingOrder;
-                    FilterOrders(); // Reapply filtering and sorting
+                    FilterOrders();
                 }
-
-                isEditing = false; // Hide the edit form
+                isEditing = false;
                 editingOrder = null;
             }
             else
@@ -237,9 +218,7 @@ else
 
     private void CancelEdit()
     {
-        editingOrder = null;
         isEditing = false;
+        editingOrder = null;
     }
-
 }
-
