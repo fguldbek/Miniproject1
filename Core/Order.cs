@@ -34,6 +34,6 @@ namespace Core
         public string Room { get; set; } = "Room 12";
 
         public string Status { get; set; } = "For Sale";
-
+        
     }
 }
