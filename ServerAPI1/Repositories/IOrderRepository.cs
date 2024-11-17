@@ -17,7 +17,7 @@ namespace ServerAPI1.Repositories
         // findes, sker ingenting
         void DeleteById(int id);
         
-        void MarkAsPurchased(int id);
+        void MarkAsPurchased(int id, int BuyerId);
         void ReserveItem(int id);
         void UndoReservation(int id);
 

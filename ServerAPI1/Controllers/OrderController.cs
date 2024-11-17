@@ -32,18 +32,27 @@ namespace ServerAPI1.Controllers
         }
         
         [HttpPut("markaspurchased/{id}")]
-        public IActionResult MarkAsPurchased(int id)
+        public IActionResult MarkAsPurchased(int id, [FromQuery] int buyerId)
         {
             try
             {
-                mRepo.MarkAsPurchased(id);
-                return Ok();
+                // Call the repository method
+                mRepo.MarkAsPurchased(id, buyerId);
+
+                // You can add an additional check for the case when the order was not found
+                // if the repository method doesn't return anything to indicate failure.
+
+                return Ok(); // Successfully marked as purchased
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                // Handle the exception and return an error response
+                return StatusCode(500, $"An error occurred: {ex.Message}");
             }
         }
+
+
+
 
         [HttpPut("reserve/{id}")]
         public IActionResult Reserve(int id)

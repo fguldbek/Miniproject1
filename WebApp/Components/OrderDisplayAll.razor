@@ -82,10 +82,41 @@ else
     private bool isDescending = false; // For at tracke sortering efter dyreste først
     private string serverUrl = "http://localhost:5145"; 
     
+    public int? BuyerId;
+    
+
+    public async Task GetBuyerId()
+    {
+        // Retrieve the "user" data from localStorage and deserialize it into a User object
+        var user = await localStorage.GetItemAsync<User>("user");
+
+        // Debugging with Console.WriteLine
+        if (user != null)
+        {
+            BuyerId = user.BuyerId;
+            Console.WriteLine($"User found: UserId = {BuyerId}");
+        }
+        else
+        {
+            BuyerId = null;
+            Console.WriteLine("User not found in localStorage");
+        }
+    }
+
+    
     
     private async Task MarkAsPurchased(int orderId)
     {
-        var response = await Http.PutAsync($"{serverUrl}/api/shopping/markaspurchased/{orderId}", null);
+        if (BuyerId == null)
+        {
+            // Handle the case where BuyerId is not found
+            return;
+        }
+
+        var response = await Http.PutAsync(
+            $"{serverUrl}/api/shopping/markaspurchased/{orderId}?buyerId={BuyerId}", null
+        );
+
         if (response.IsSuccessStatusCode)
         {
             var order = orders.FirstOrDefault(o => o.Id == orderId);
@@ -95,6 +126,7 @@ else
             }
         }
     }
+
 
     private async Task ToggleReservation(Order order)
     {
@@ -110,6 +142,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
+        await GetBuyerId();
         // Henter alle ordrer fra API
         orders = await Http.GetFromJsonAsync<Order[]>($"{serverUrl}/api/shopping/getall");
 
