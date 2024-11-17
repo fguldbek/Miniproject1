@@ -52,13 +52,61 @@ else
                         <strong>Price:</strong> $@order.Price<br />
                         <strong>Status:</strong> @order.Status<br />
                         <strong>Category:</strong> @order.Category<br />
+                        <strong>Description:</strong> @order.Description<br />
+
                         <strong>Room:</strong> @order.Room
                     </p>
+                    <button class="btn btn-primary me-2" @onclick="() => StartEdit(order)">Edit</button>
+
                 </div>
             </div>
         }
     </div>
 }
+@if (isEditing && editingOrder != null)
+{
+<EditForm Model="editingOrder" OnValidSubmit="HandleEditSubmit" class="p-4 mb-4" style="border: 1px solid #ccc; border-radius: 10px; background-color: #f9f9f9;">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="mb-3">
+        <label for="Name">Name</label>
+        <InputText id="Name" @bind-Value="editingOrder.Name" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label for="Amount">Amount</label>
+        <InputNumber id="Amount" @bind-Value="editingOrder.Amount" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label for="Price">Price</label>
+        <InputNumber id="Price" @bind-Value="editingOrder.Price" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label for="Name">Description</label>
+        <InputText id="Description" @bind-Value="editingOrder.Description" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label for="Category">Category</label>
+        <select id="Category" @bind="editingOrder.Category" class="form-control">
+            @foreach (var category in availableCategories)
+            {
+            <option value="@category">@category</option>
+            }
+        </select>
+    </div>
+    <div class="mb-3">
+        <label for="Room">Room</label>
+        <select id="Room" @bind="editingOrder.Room" class="form-control">
+            <option value="Room 12">Room 12</option>
+            <option value="Room 74">Room 74</option>
+            <option value="Room 102">Room 102</option>
+            <option value="Room 132">Room 132</option>
+        </select>
+    </div>
+    <button type="submit" class="btn btn-success">Save</button>
+    <button type="button" class="btn btn-secondary ms-2" @onclick="CancelEdit">Cancel</button>
+</EditForm>
+}
+
 
 @code {
     private Order[]? orders;
@@ -67,6 +115,9 @@ else
     private string selectedCategory = "";
     private bool isAscending = false; // For at tracke sortering efter billigste først
     private bool isDescending = false; // For at tracke sortering efter dyreste først
+    private Order? editingOrder; // Holds the currently selected order for editing
+    private bool isEditing = false; // Flag to control the visibility of the edit form
+
     private string serverUrl = "http://localhost:5145"; 
     
     public int? UserId;
@@ -142,6 +193,53 @@ else
             filteredOrders = orders?.Where(order => order.Category == selectedCategory).ToArray() ?? Array.Empty<Order>();
         }
     }
-    
+    private void StartEdit(Order order)
+    {
+        // Clone the selected order to avoid modifying the original data
+        editingOrder = new Order
+        {
+            Id = order.Id,
+            Name = order.Name,
+            Amount = order.Amount,
+            Price = order.Price,
+            Status = order.Status,
+            Category = order.Category,
+            Room = order.Room,
+            ImageUrl = order.ImageUrl
+        };
+        isEditing = true; // Show the edit form
+    }
+    private async Task HandleEditSubmit()
+    {
+        if (editingOrder != null)
+        {
+            var response = await Http.PutAsJsonAsync($"{serverUrl}/api/shopping/update", editingOrder);
+
+            if (response.IsSuccessStatusCode)
+            {
+                // Update the local orders list
+                var index = Array.FindIndex(orders, o => o.Id == editingOrder.Id);
+                if (index >= 0)
+                {
+                    orders[index] = editingOrder;
+                    FilterOrders(); // Reapply filtering and sorting
+                }
+
+                isEditing = false; // Hide the edit form
+                editingOrder = null;
+            }
+            else
+            {
+                Console.WriteLine("Failed to update the order.");
+            }
+        }
+    }
+
+    private void CancelEdit()
+    {
+        editingOrder = null;
+        isEditing = false;
+    }
+
 }
 
