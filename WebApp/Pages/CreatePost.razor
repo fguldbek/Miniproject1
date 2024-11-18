@@ -9,7 +9,7 @@
 @inject ILocalStorageService localStorage
 @using Miniproject1.Components
 
-<h1>Create a Post</h1>
+<h2>Create a post - easy and simple </h2>
 
 @if (!string.IsNullOrEmpty(userMessage))
 {
@@ -55,15 +55,17 @@
             }
         </select>
     </div>
-
-    <div class="col-md-12 mb-3">
-        <label for="ImageUpload">Upload Image</label>
-        <br/>
-        <InputFile OnChange="HandleFileSelected"/>
-    </div>
     
+    <div class="col-md-12 mb-3">
+        <label for="ImageUpload" class="btn btn-primary">
+            Upload Image
+            <InputFile id="ImageUpload" OnChange="HandleFileSelected" class="d-none" />
+        </label>
+    </div>
+
+
     <div class="col-12 mb-3">
-        <button type="submit" class="btn btn-primary">Add</button>
+        <button type="submit" class="btn btn-primary">Create the post!</button>
     </div>
 </EditForm>
 

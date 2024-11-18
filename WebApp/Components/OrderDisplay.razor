@@ -116,7 +116,7 @@ else
 }
 
 @code {
-    private Order[]? orders;
+    private Order[]? orders; 
     private Order[] filteredOrders;
     private List<string> availableCategories = new List<string>(); 
     private string selectedCategory = "";
@@ -125,9 +125,9 @@ else
     private Order? editingOrder; 
     private bool isEditing = false; 
     private bool isActive = true; 
-
-
     private string serverUrl = "http://localhost:5145"; 
+    
+    
     public int? UserId;
 
     public async Task GetUserId()

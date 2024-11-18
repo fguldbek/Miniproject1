@@ -1,6 +1,7 @@
 ﻿@inherits LayoutComponentBase
 @inject Miniproject1.Service.ILoginService LoginService
 @inject NavigationManager NavManager
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
 
 
@@ -12,7 +13,7 @@
     <main>
         <div class="top-row px-4">
             <NavLink @onclick="HandleLoginLogoutClick" class="nav-link" href="Login" ActiveClass="active">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> 
+                <span class="bi bi-door-open" aria-hidden="true"></span> 
                 @buttonText
             </NavLink>
 
@@ -26,45 +27,53 @@
 </div>
 
 @code {
-    private string buttonText = "Log In";
+    private string buttonText = "Log In"; // Default text
 
     protected override async Task OnInitializedAsync()
     {
-        // Tjek om brugeren er logget ind, og opdater knapteksten
-        try
-        {
-            var user = await LoginService.GetUserLoggedIn();
-            buttonText = user == null ? "Log In" : "Log Out";
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error during initialization: {ex.Message}");
-        }
+        // Check if the user is logged in when the page is first loaded
+        await UpdateButtonText();
     }
 
     private async Task HandleLoginLogoutClick()
     {
         var user = await LoginService.GetUserLoggedIn();
+        buttonText = user == null ? "Log In" : "Log Out";
 
         if (user == null)
         {
-            // Hvis brugeren ikke er logget ind, naviger til login-siden
+            // If the user is not logged in, navigate to the login page
             NavManager.NavigateTo("/login/Home");
         }
         else
         {
-            // Hvis brugeren er logget ind, log dem ud og opdater knapteksten
+            // If the user is logged in, log them out
             try
             {
                 await LoginService.Logout();
-                buttonText = "Log In";
-                await InvokeAsync(StateHasChanged); // Opdaterer UI
+                await UpdateButtonText(); // Update button text after logout
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error during logout: {ex.Message}");
             }
         }
+    }
+
+    private async Task UpdateButtonText()
+    {
+        // Update the button text based on the user's login status
+        try
+        {
+            var user = await LoginService.GetUserLoggedIn();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error during user status check: {ex.Message}");
+        }
+
+        // Force a re-render to update the UI
+        await InvokeAsync(StateHasChanged);
     }
 }
 

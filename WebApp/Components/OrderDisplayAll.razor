@@ -24,12 +24,12 @@ else
         <div style="display: flex; gap: 10px; margin-bottom: 20px;">
             <button class="btn" 
                     @onclick="SortByPriceDescending"
-                    style="flex: 1; padding: 10px 20px; font-size: 1rem; border-radius: 5px; background-color: @(isDescending ? "#6495ED" : "#6c757d"); color: white; border: none;">
+                    style="flex: 0.10; padding: 10px 20px; font-size: 1rem; border-radius: 5px; background-color: @(isDescending ? "#6495ED" : "#6c757d"); color: white; border: none;">
                 Sort by Price (High to Low)
             </button>
             <button class="btn" 
                     @onclick="SortByPriceAscending"
-                    style="flex: 1; padding: 10px 20px; font-size: 1rem; border-radius: 5px; background-color: @(isAscending ? "#6495ED" : "#6c757d"); color: white; border: none;">
+                    style="flex: 0.10; padding: 10px 20px; font-size: 1rem; border-radius: 5px; background-color: @(isAscending ? "#6495ED" : "#6c757d"); color: white; border: none;">
                 Sort by Price (Low to High)
             </button>
         </div>
